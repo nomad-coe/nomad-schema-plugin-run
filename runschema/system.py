@@ -22,9 +22,9 @@ from nomad.metainfo import (  # pylint: disable=unused-import
     MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
     Reference, MEnum, derived)
 from nomad.datamodel.data import ArchiveSection
-
-from ..common import FastAccess
+from nomad.datamodel.metainfo.common import FastAccess
 from nomad.units import ureg
+
 
 m_package = Package()
 

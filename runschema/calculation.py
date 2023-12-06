@@ -21,11 +21,10 @@ from nomad.metainfo import (  # pylint: disable=unused-import
     MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
     Reference, MEnum, derived, HDF5Reference)
 from nomad.datamodel.metainfo.common import ProvenanceTracker, PropertySection
-from nomad.datamodel.metainfo.simulation.system import System, AtomsGroup
-from nomad.datamodel.metainfo.simulation.method import Method, HoppingMatrix
+from .system import System, AtomsGroup
+from .method import Method, HoppingMatrix
 from nomad.datamodel.data import ArchiveSection
-
-from ..common import FastAccess
+from nomad.datamodel.metainfo.common import FastAccess
 
 
 m_package = Package()

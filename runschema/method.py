@@ -24,7 +24,7 @@ from nomad.datamodel.data import ArchiveSection
 from nomad.metainfo import (  # pylint: disable=unused-import
     MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
     Reference, MEnum, derived)
-from ..common import FastAccess
+from nomad.datamodel.metainfo.common import FastAccess
 
 
 m_package = Package()
