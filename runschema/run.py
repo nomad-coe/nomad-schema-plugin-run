@@ -16,16 +16,25 @@
 # limitations under the License.
 #
 
-import numpy as np            # pylint: disable=unused-import
+import numpy as np
 
-from nomad.metainfo import (  # pylint: disable=unused-import
-    MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
-    Reference)
+from nomad.metainfo import (
+    MSection,
+    MCategory,
+    Category,
+    Package,
+    Quantity,
+    Section,
+    SubSection,
+    SectionProxy,
+    Reference,
+)
 from .method import Method
 from .system import System
 from .calculation import Calculation
 from nomad.datamodel.metainfo.common import FastAccess
 from nomad.datamodel.data import ArchiveSection
+
 
 m_package = Package()
 

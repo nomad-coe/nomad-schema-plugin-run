@@ -16,14 +16,20 @@
 # limitations under the License.
 #
 
-import numpy as np            # pylint: disable=unused-import
+import numpy as np
 import typing
 
-from pint.util import SharedRegistryObject                 # pylint: disable=unused-import
 from nomad.datamodel.data import ArchiveSection
-from nomad.metainfo import (  # pylint: disable=unused-import
-    MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
-    Reference, MEnum, derived)
+from nomad.metainfo import (
+    MSection,
+    Package,
+    Quantity,
+    Section,
+    SubSection,
+    SectionProxy,
+    Reference,
+    MEnum,
+)
 from nomad.datamodel.metainfo.common import FastAccess
 
 
