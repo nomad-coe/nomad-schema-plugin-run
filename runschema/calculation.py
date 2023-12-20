@@ -20,11 +20,10 @@ import numpy as np            # pylint: disable=unused-import
 from nomad.metainfo import (  # pylint: disable=unused-import
     MSection, MCategory, Category, Package, Quantity, Section, SubSection, SectionProxy,
     Reference, MEnum, derived, HDF5Reference)
-from nomad.datamodel.metainfo.common import ProvenanceTracker, PropertySection
+from nomad.datamodel.metainfo.common import ProvenanceTracker, PropertySection, FastAccess
 from .system import System, AtomsGroup
 from .method import Method, HoppingMatrix
 from nomad.datamodel.data import ArchiveSection
-from nomad.datamodel.metainfo.common import FastAccess
 
 
 m_package = Package()
@@ -119,7 +118,7 @@ class Atomic(MSection):
         ''')
 
 
-class AtomicValues(MSection):
+class AtomicValues(ArchiveSection):
     '''
     Generic section containing information regarding the values of an atomic quantity.
     '''

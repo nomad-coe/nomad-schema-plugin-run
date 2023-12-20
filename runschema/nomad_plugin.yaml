@@ -1,0 +1,4 @@
+plugin_type: schema
+name: runschema
+description: |
+  Run schema plugin for NOMAD.
