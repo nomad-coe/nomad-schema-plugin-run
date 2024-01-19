@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/nomad-coe/nomad-schema-run-plugin"
+homepage = "https://github.com/nomad-coe/nomad-schema-plugin-run.git"
 
 [project.optional-dependencies]
 dev = [

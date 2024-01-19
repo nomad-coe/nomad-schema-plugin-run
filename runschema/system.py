@@ -270,7 +270,7 @@ class Atoms(MSection):
             return Atoms(
                 symbols=self.labels,
                 positions=self.positions.to(ureg.angstroms).m,
-                cell=self.lattice_vectors.to(ureg.angstroms).m,
+                cell=self.lattice_vectors.to(ureg.angstroms).m if self.lattice_vectors is not None else None,
                 pbc=self.periodic
             )
         except Exception as e:
