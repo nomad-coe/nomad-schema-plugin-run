@@ -269,7 +269,7 @@ class Atoms(MSection):
             from ase import Atoms
             return Atoms(
                 symbols=self.labels,
-                positions=self.positions.to(ureg.angstroms).m,
+                positions=self.positions.to(ureg.angstroms).m if self.positions is not None else None,
                 cell=self.lattice_vectors.to(ureg.angstroms).m if self.lattice_vectors is not None else None,
                 pbc=self.periodic
             )
