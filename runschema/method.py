@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+from logging import Logger
 import numpy as np
 import typing
 
@@ -31,6 +32,7 @@ from nomad.metainfo import (
     MEnum,
 )
 from nomad.datamodel.metainfo.common import FastAccess
+from nomad.quantum_states import RussellSaundersState
 
 
 m_package = Package()
@@ -38,6 +40,27 @@ m_package = Package()
 
 unavailable = "unavailable"
 not_processed = "not processed"
+orbitals = {
+    -1: dict(zip(range(4), ("s", "p", "d", "f"))),
+    0: {0: ""},
+    1: dict(zip(range(-1, 2), ("x", "z", "y"))),
+    2: dict(zip(range(-2, 3), ("xy", "xz", "z^2", "yz", "x^2-y^2"))),
+    3: dict(
+        zip(
+            range(-3, 4),
+            ("x(x^2-3y^2)", "xyz", "xz^2", "z^3", "yz^2", "z(x^2-y^2)", "y(3x^2-y^2)"),
+        )
+    ),
+}
+invert_dict = lambda x: dict(zip(x.values(), x.keys()))
+
+
+def is_none_or_empty(x):
+    if x is None:
+        return True
+    if isinstance(x, np.ndarray):
+        return x.size == 0
+    return not x
 
 
 class Mesh(MSection):
@@ -443,10 +466,16 @@ class Pseudopotential(MSection):
     )
 
     type = Quantity(
-        type=str,
+        type=MEnum("US V", "US MBK", "PAW"),
         shape=[],
         description="""
         Pseudopotential classification.
+        | abbreviation | description | DOI |
+        | ------------ | ----------- | --------- |
+        | `'US'`       | Ultra-soft  | |
+        | `'PAW'`      | Projector augmented wave | |
+        | `'V'`        | Vanderbilt | https://doi.org/10.1103/PhysRevB.47.6728 |
+        | `'MBK'`      | Morrison-Bylander-Kleinman | https://doi.org/10.1103/PhysRevB.41.7892 |
         """,
     )
 
@@ -490,6 +519,251 @@ class Pseudopotential(MSection):
         shape=[],
         description="""
         Maximum magnetic momentum of the pseudopotential projectors.
+        """,
+    )
+
+
+class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
+    """
+    An `AtomicOrbitalState` which supports fast notation for single-electron states.
+    """
+
+    quantities: list[str] = [
+        "n_quantum_number",
+        "l_quantum_number",
+        "ml_quantum_number",
+        "ms_quantum_bool",
+        "j_quantum_number",
+        "mj_quantum_number",
+        "occupation",
+        "degeneracy",
+    ]
+    s_quantum_number = 0.5
+    nominal_occuption = 1.0
+
+    l_quantum_symbols = orbitals[-1]
+    ml_quantum_symbols = {i: orbitals[i] for i in range(4)}
+    l_quantum_numbers = invert_dict(l_quantum_symbols)
+    ml_quantum_numbers = {k: invert_dict(v) for k, v in ml_quantum_symbols.items()}
+
+    ms_quantum_map = (True, False)
+    ms_quantum_symbols = dict(zip(ms_quantum_map, ("up", "down")))
+    ms_quantum_values = dict(zip(ms_quantum_map, (s_quantum_number, -s_quantum_number)))
+
+    def __setattr__(self, name, value):
+        if name == "l_quantum_number":
+            try:
+                value = abs(value)
+            except TypeError:
+                return
+            if self.n_quantum_number is not None:
+                if value > self.n_quantum_number - 1:
+                    raise ValueError(f"Invalid value for {name}: {value}")
+        elif name == "j_quantum_number":
+            try:
+                value = [abs(x) for x in value]
+            except TypeError:
+                return
+        elif name == "ml_quantum_number":
+            if isinstance(value, int):
+                if value not in self.ml_quantum_symbols[self.l_quantum_number]:
+                    raise ValueError(f"Invalid value for {name}: {value}")
+        elif name == "s_quantum_number":
+            raise AttributeError(
+                "Cannot alter the spin quantum number $s$ of a single-electron state."
+            )
+        super().__setattr__(name, value)
+
+    def normalize(self, archive, logger: typing.Optional[Logger]):
+        # self.set_degeneracy()
+        pass
+
+    def set_j_quantum_number(self) -> list[float]:
+        """Given $l$ and $m_s$, set the total angular momentum $j$.
+        Return $j$, fi already set."""
+        if is_none_or_empty(self.j_quantum_number):
+            if (jj := self.l_quantum_number) is None:
+                self.j_quantum_number = []
+            else:
+                jjs = [jj + s for s in self.ms_quantum_values.values()]
+                self.j_quantum_number = RussellSaundersState.generate_Js(
+                    jjs[0], jjs[1], rising=True
+                )
+        return self.j_quantum_number
+
+    def set_mj_quantum_number(self) -> list[float]:
+        """Given $m_l$ and $m_s$, set $m_j$. Return $m_j$, if already set."""
+        if is_none_or_empty(self.mj_quantum_number):
+            mj = self.ml_quantum_number
+            if mj is None:
+                self.mj_quantum_number = []
+            else:
+                if self.ms_quantum_bool is None:
+                    self.mj_quantum_number = mj + np.array(
+                        tuple(self.ms_quantum_values.values())
+                    )
+                else:
+                    self.mj_quantum_number = (
+                        mj + self.ms_quantum_values[self.ms_quantum_bool]
+                    )
+        return self.mj_quantum_number
+
+    def get_l_degeneracy(self) -> int:
+        """Return the multiplicity of the orbital angular momentum $l$."""
+        try:
+            return 2 * (
+                2 * self.l_quantum_number + 1
+            )  # TODO: replace with RussellSaundersState.multiplicity
+        except TypeError:
+            raise ValueError("Cannot get $l$ degeneracy without $l$.")
+
+    def set_degeneracy(self) -> int:
+        """Set the degeneracy based on how specifically determined the quantum state is.
+        This function can be triggered anytime to update the degeneracy."""
+        # TODO: there are certain j (mj) specifications that may straddle just one l value
+        if self.ml_quantum_number is not None:
+            if self.ms_quantum_bool is not None:
+                self.degeneracy = 1
+            else:
+                self.degeneracy = 2
+        elif self.j_quantum_number is not None:
+            degeneracy = 0
+            for jj in self.j_quantum_number:
+                if self.mj_quantum_number is not None:
+                    mjs = RussellSaundersState.generate_MJs(
+                        self.j_quantum_number[0], rising=True
+                    )
+                    degeneracy += len(
+                        [mj for mj in mjs if mj in self.mj_quantum_number]
+                    )
+                else:
+                    degeneracy += RussellSaundersState(jj, 1).degeneracy
+            if self.ms_quantum_bool is not None:
+                self.degeneracy = degeneracy / 2
+            else:
+                self.degeneracy = degeneracy
+        elif self.l_quantum_number is not None:
+            if self.ms_quantum_bool is not None:
+                self.degeneracy = self.get_l_degeneracy() / 2
+            else:
+                self.degeneracy = self.get_l_degeneracy()
+        return self.degeneracy
+
+    n_quantum_number = Quantity(
+        type=np.int32,
+        shape=[],
+        description="""
+        Principal quantum number $n$.
+        """,
+    )
+    l_quantum_number = Quantity(
+        type=np.int32,
+        shape=[],
+        description="""
+        Orbital angular quantum number $l$.
+        """,
+    )
+    ml_quantum_number = Quantity(
+        type=np.int32,
+        shape=[],
+        description="""
+        Azimuthal projection of the $l$ vector.
+        """,
+    )
+    j_quantum_number = Quantity(
+        type=np.float64,
+        shape=["1..2"],
+        description="""
+        Total angular momentum quantum number $j = |l-s| ... l+s$.
+        **Necessary with strong L-S coupling or non-collinear spin systems.**
+        """,
+    )
+    mj_quantum_number = Quantity(
+        type=np.float64,
+        shape=["*"],
+        description="""
+        Azimuthal projection of the $j$ vector.
+        **Necessary with strong L-S coupling or non-collinear spin systems.**
+        """,
+    )
+    ms_quantum_bool = Quantity(
+        type=bool,
+        shape=[],
+        description="""
+        Boolean representation of the spin state $m_s$.
+        `False` for spin down, `True` for spin up.
+        In non-collinear spin systems, the projection axis $z$ should also be defined.
+        """,
+    )
+    # TODO: add the relativistic kappa_quantum_number
+    degeneracy = Quantity(
+        type=np.int32,
+        description="""
+        The number of states under the filling constraints applied to the orbital set.
+        This implicitly assumes that all orbitals in the set are degenerate.
+        """,
+    )
+
+
+class CoreHole(SingleElectronState):
+    """
+    Describes the quantum state of a single hole in an open-shell core state. This is the physical interpretation.
+    For modelling purposes, the electron charge excited may lie between 0 and 1. This follows a so-called Janak state.
+    Sometimes, no electron is actually, excited, but just marked for excitation. This is denoted as an `initial` state.
+    Any missing quantum numbers indicate some level of arbitrariness in the choice of the core hole, represented in the degeneracy.
+    """
+
+    quantities: list[str] = SingleElectronState.quantities + ["n_electrons_excited"]
+
+    def __setattr__(self, name, value):
+        if name == "n_electrons_excited":
+            if value < 0.0:
+                raise ValueError("Number of excited electrons must be positive.")
+            if value > 1.0:
+                raise ValueError("Number of excited electrons must be less than 1.")
+        elif name == "dscf_state":
+            if value == "initial":
+                self.n_electrons_excited = 0.0
+                self.degeneracy = 1
+        super().__setattr__(name, value)
+
+    def normalize(self, archive, logger: typing.Optional[Logger]):
+        super().normalize(archive, logger)
+        self.set_occupation()
+
+    def set_occupation(self) -> float:
+        """Set the occupation based on the number of excited electrons."""
+        if not self.occupation:
+            try:
+                self.occupation = self.set_degeneracy() - self.n_electrons_excited
+            except TypeError:
+                raise AttributeError(
+                    "Cannot set occupation without `n_electrons_excited`."
+                )
+        return self.occupation
+
+    n_electrons_excited = Quantity(
+        type=np.float64,
+        shape=[],
+        description="""
+        The electron charge excited for modelling purposes.
+        Choices that deviate from 0 or 1 typically leverage Janak composition.
+        Unless the `initial` state is chosen, the model corresponds to a single electron being excited in physical reality.
+        """,
+    )
+    occupation = Quantity(
+        type=np.float64,
+        description="""
+        The total number of electrons within the state (as defined by degeneracy)
+        after exciting the model charge.
+        """,
+    )
+    dscf_state = Quantity(
+        type=MEnum("initial", "final"),
+        shape=[],
+        description="""
+        The $\\Delta$-SCF state tag, used to identify the role in the workflow of the same name.
+        Allowed values are `initial` (not to be confused with the _initial-state approximation_) and `final`.
         """,
     )
 
