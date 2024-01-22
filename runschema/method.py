@@ -2062,10 +2062,10 @@ class LatticeModelHamiltonian(MSection):
     )
 
 
-class CoreHole(MSection):
+class CoreHoleSpectra(MSection):
     """
-    Section containing the various parameters that define a core-hole calculation. It can
-    be within BSE as a "core" subsection.
+    Section containing the various parameters that define a calculation of core-hole spectra.
+    It can be within BSE as a "core" subsection.
     """
 
     m_def = Section(validate=False)
