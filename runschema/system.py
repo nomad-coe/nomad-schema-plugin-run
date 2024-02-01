@@ -580,6 +580,22 @@ class Constraint(MSection):
     )
 
 
+class MACE(MSection):
+    m_def = Section(
+        description="""
+        MACE descriptors and representations.
+        """
+    )
+
+    system_descriptor = Quantity(
+        type=np.dtype("float64"),
+        shape=["*"],
+        description="""
+        MACE descriptors computed using the MACE-MP-0 foundation model and averaged across all atoms in the system.
+        """,
+    )
+
+
 class SOAP(MSection):
     m_def = Section(
         description="""
@@ -611,32 +627,60 @@ class SOAP(MSection):
         """,
     )
 
-    soap = Quantity(
-        type=np.dtype("float64"),
-        shape=["n_sites", "*", "*", "*"],
+    R_mix = Quantity(
+        type=bool,
         description="""
-        Full SOAP stored in array format.
+        If True, the radial basis functions are mixed.
         """,
     )
-    tr_soap = Quantity(
-        type=np.dtype("float64"),
-        shape=["n_sites", "*"],
+
+    Z_mix = Quantity(
+        type=bool,
         description="""
-        Normalised, tensor-reduced SOAP stored as a flat vector.
+        If True, the elements are mixed.
         """,
     )
-    global_soap = Quantity(
-        type=np.dtype("float64"),
-        shape=["*", "*", "*"],
+
+    sym_mix = Quantity(
+        type=bool,
         description="""
-        Full SOAP, c_znlm averaged across sites, stored in array format.
+        If True, use symmetric tensor decomposition, otherwise use tensor sketching.
         """,
     )
-    global_tr_soap = Quantity(
+
+    coupling = Quantity(
+        type=bool,
+        description="""
+        If True, form tensor product between mixed channels, else form element-wise product.
+        """,
+    )
+
+    radial_basis = Quantity(
+        type=str,
+        description="""
+        Radial basis functions to use with SOAP descriptors.
+        """,
+    )
+
+    K = Quantity(
+        type=np.dtype(np.int32),
+        description="""
+        Number of channels to use in tensor decomposition/sketching.
+        """,
+    )
+
+    structural_soap = Quantity(
         type=np.dtype("float64"),
         shape=["*"],
         description="""
-        Normalised, tensor-reduced global, c_znlm averaged across sites, SOAP stored as a flat vector.
+        1. Structure scaled so that the average nearest neighbour distance is 1.54 AA.
+        Atoms in the initial structure without a neighbour within 10 AA do not count towards the scaling factor and structures with no neighbours within 10 AA are not scaled at all.
+        2. All atoms replaced with C
+        3. soap computed using the following argument string
+
+        soap cutoff=5.0 l_max=4 n_max=8 radial_basis=GTO atom_sigma=0.4 average=True n_Z=1 Z=6 n_species=1 species_Z=6 R_mix=True sym_mix=False Z_mix=False K=8 coupling=False
+
+        This has the effect of making the SOAP descriptor `purely structural' in the sense that chemical species and uniform scalings i.e. from different bond lengths not affect the descriptor. The density expansion coefficients c_nlm on different atoms are averaged prior to forming the power spectrum. Tensor sketching is used across the radial channels to reduce the size of the descriptor.
         """,
     )
 
@@ -648,6 +692,7 @@ class Descriptors(MSection):
         """
     )
     soap = SubSection(sub_section=SOAP.m_def, repeats=False)
+    mace = SubSection(sub_section=MACE.m_def, repeats=False)
 
 
 class System(ArchiveSection):
