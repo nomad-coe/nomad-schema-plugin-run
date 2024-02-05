@@ -843,6 +843,8 @@ class AtomParameters(MSection):
 
     pseudopotential = SubSection(sub_section=Pseudopotential.m_def, repeats=False)
 
+    core_hole = SubSection(sub_section=CoreHole.m_def)
+
     n_orbitals = Quantity(
         type=np.int32,
         shape=[],
@@ -2338,7 +2340,7 @@ class BSE(ExcitedStateMethodology):
 
     screening = SubSection(sub_section=Screening.m_def)
 
-    core_hole = SubSection(sub_section=CoreHole.m_def)
+    core_hole = SubSection(sub_section=CoreHoleSpectra.m_def)
 
 
 class DMFT(MSection):
@@ -2618,7 +2620,7 @@ class Electronic(MSection):
     )
 
     charge = Quantity(
-        type=np.int32,
+        type=np.float64,
         shape=[],
         unit="coulomb",
         description="""
@@ -2627,7 +2629,7 @@ class Electronic(MSection):
     )
 
     n_bands = Quantity(
-        type=int,
+        type=np.int32,
         shape=[],
         description="""
         Specifies the number of bands used in the calculation.
@@ -2635,7 +2637,7 @@ class Electronic(MSection):
     )
 
     n_spin_channels = Quantity(
-        type=int,
+        type=np.int32,
         shape=[],
         description="""
         Gives the number of spin channels.
@@ -2644,9 +2646,9 @@ class Electronic(MSection):
 
     n_electrons = Quantity(
         type=np.float64,
-        shape=["n_spin_channels"],
+        shape=[],
         description="""
-        Number of electrons in system
+        Number of valence electrons in the system.
         """,
     )
 
@@ -2797,7 +2799,7 @@ class Method(ArchiveSection):
 
     force_field = SubSection(sub_section=ForceField.m_def)
 
-    core_hole = SubSection(sub_section=CoreHole.m_def)
+    core_hole = SubSection(sub_section=CoreHoleSpectra.m_def)
 
     k_mesh = SubSection(sub_section=KMesh.m_def)
 
