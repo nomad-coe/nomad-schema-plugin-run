@@ -2728,6 +2728,31 @@ class Method(ArchiveSection):
 
     m_def = Section(validate=False)
 
+    label = Quantity(
+        type=MEnum("DFT", "TB", "GW", "DMFT", "BSE", "kMC", "NMR"),
+        description="""
+        Label to identify the method applied in the simulation. Allowed values are:
+
+        | Label | Name | Reference |
+
+        | ----- | ---- | ----------- |
+
+        | `'DFT'` | Density Functional Theory | https://en.wikipedia.org/wiki/Density_functional_theory |
+
+        | `'TB'` | Tight-Binding models | https://en.wikipedia.org/wiki/Tight_binding |
+
+        | `'GW'` | GW approximation | https://en.wikipedia.org/wiki/GW_approximation |
+
+        | `'DMFT'` | Dynamical Mean-Field Theory | https://en.wikipedia.org/wiki/GW_approximation |
+
+        | `'BSE'` | Bethe-Salpeter Equation | https://en.wikipedia.org/wiki/Bethe-Salpeter_equation |
+
+        | `'kMC'` | Kinetic Monte Carlo |https://en.wikipedia.org/wiki/Kinetic_Monte_Carlo |
+
+        | `'NMR'` | Nuclear Magnetic Resonance | https://en.wikipedia.org/wiki/Nuclear_magnetic_resonance |
+        """,
+    )
+
     stress_tensor_method = Quantity(
         type=str,
         shape=[],
