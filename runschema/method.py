@@ -523,7 +523,7 @@ class Pseudopotential(MSection):
     )
 
 
-class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
+class SingleElectronState(ArchiveSection):  # inherit from AtomicOrbitalState?
     """
     An `AtomicOrbitalState` which supports fast notation for single-electron states.
     """
