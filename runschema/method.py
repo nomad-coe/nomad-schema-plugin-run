@@ -16,39 +16,38 @@
 # limitations under the License.
 #
 
-from logging import Logger
-import numpy as np
 import typing
+from logging import Logger
 
+import numpy as np
 from nomad.datamodel.data import ArchiveSection
+from nomad.datamodel.metainfo.common import FastAccess
 from nomad.metainfo import (
+    MEnum,
     MSection,
     Package,
     Quantity,
-    Section,
-    SubSection,
-    SectionProxy,
     Reference,
-    MEnum,
+    Section,
+    SectionProxy,
+    SubSection,
 )
-from nomad.datamodel.metainfo.common import FastAccess
 from nomad.quantum_states import RussellSaundersState
-
 
 m_package = Package()
 
 
-unavailable = "unavailable"
-not_processed = "not processed"
+unavailable = 'unavailable'
+not_processed = 'not processed'
 orbitals = {
-    -1: dict(zip(range(4), ("s", "p", "d", "f"))),
-    0: {0: ""},
-    1: dict(zip(range(-1, 2), ("x", "z", "y"))),
-    2: dict(zip(range(-2, 3), ("xy", "xz", "z^2", "yz", "x^2-y^2"))),
+    -1: dict(zip(range(4), ('s', 'p', 'd', 'f'))),
+    0: {0: ''},
+    1: dict(zip(range(-1, 2), ('x', 'z', 'y'))),
+    2: dict(zip(range(-2, 3), ('xy', 'xz', 'z^2', 'yz', 'x^2-y^2'))),
     3: dict(
         zip(
             range(-3, 4),
-            ("x(x^2-3y^2)", "xyz", "xz^2", "z^3", "yz^2", "z(x^2-y^2)", "y(3x^2-y^2)"),
+            ('x(x^2-3y^2)', 'xyz', 'xz^2', 'z^3', 'yz^2', 'z(x^2-y^2)', 'y(3x^2-y^2)'),
         )
     ),
 }
@@ -81,17 +80,17 @@ class Mesh(MSection):
 
     sampling_method = Quantity(
         type=MEnum(
-            "Gamma-centered",
-            "Monkhorst-Pack",
-            "Gamma-offcenter",
-            "Line-path",
-            "Equidistant",
-            "Logarithmic",
-            "Tan",
-            "Gauss-Legendre",
-            "Gauss-Laguerre" "Clenshaw-Curtis",
-            "Newton-Cotes",
-            "Gauss-Hermite",
+            'Gamma-centered',
+            'Monkhorst-Pack',
+            'Gamma-offcenter',
+            'Line-path',
+            'Equidistant',
+            'Logarithmic',
+            'Tan',
+            'Gauss-Legendre',
+            'Gauss-Laguerre' 'Clenshaw-Curtis',
+            'Newton-Cotes',
+            'Gauss-Hermite',
         ),
         shape=[],
         description="""
@@ -135,7 +134,7 @@ class Mesh(MSection):
 
     grid = Quantity(
         type=np.int32,
-        shape=["dimensionality"],
+        shape=['dimensionality'],
         description="""
         Amount of mesh point sampling along each axis, i.e. [nx, ny, nz].
         """,
@@ -143,7 +142,7 @@ class Mesh(MSection):
 
     points = Quantity(
         type=np.complex128,
-        shape=["*", "dimensionality"],
+        shape=['*', 'dimensionality'],
         description="""
         List of all the points in the mesh.
         """,
@@ -151,7 +150,7 @@ class Mesh(MSection):
 
     multiplicities = Quantity(
         type=np.float64,
-        shape=["*"],
+        shape=['*'],
         description="""
         The amount of times the same point reappears. These are accounted for in `n_points`.
         A value larger than 1, typically indicates a symmtery operation that was applied to the mesh.
@@ -160,7 +159,7 @@ class Mesh(MSection):
 
     weights = Quantity(
         type=np.float64,
-        shape=["*"],
+        shape=['*'],
         description="""
         The frequency of times the same point reappears.
         A value larger than 1, typically indicates a symmtery operation that was applied to the mesh.
@@ -201,7 +200,7 @@ class LinePathSegment(MSection):
 
     points = Quantity(
         type=np.float64,
-        shape=["*", 3],
+        shape=['*', 3],
         description="""
         List of all the points in the line path segment.
         """,
@@ -227,7 +226,7 @@ class KMesh(Mesh):
 
     all_points = Quantity(
         type=np.float64,
-        shape=["*", 3],
+        shape=['*', 3],
         description="""
         Full list of the mesh points without any symmetry operations.
         """,
@@ -235,7 +234,7 @@ class KMesh(Mesh):
 
     high_symmetry_points = Quantity(
         type=str,
-        shape=["*"],
+        shape=['*'],
         description="""
         Named high symmetry points in the mesh.
         """,
@@ -253,8 +252,8 @@ class FrequencyMesh(Mesh):
 
     points = Quantity(
         type=np.complex128,
-        shape=["n_points", "dimensionality"],
-        unit="joule",
+        shape=['n_points', 'dimensionality'],
+        unit='joule',
         description="""
         List of all the points in the mesh in joules.
         """,
@@ -316,7 +315,7 @@ class Scf(MSection):
     threshold_energy_change = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Specifies the threshold for the total energy change between two subsequent
         self-consistent field (SCF) iterations. The SCF is considered converged when the
@@ -372,7 +371,7 @@ class HubbardKanamoriModel(MSection):
     u = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the (intraorbital) Hubbard interaction
         """,
@@ -381,7 +380,7 @@ class HubbardKanamoriModel(MSection):
     jh = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the (interorbital) Hund's coupling.
         """,
@@ -390,7 +389,7 @@ class HubbardKanamoriModel(MSection):
     up = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the (interorbital) Coulomb interaction. In rotational invariant
         systems, up = u - 2 * jh.
@@ -400,7 +399,7 @@ class HubbardKanamoriModel(MSection):
     j = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the exchange interaction. In rotational invariant systems, j = jh.
         """,
@@ -409,7 +408,7 @@ class HubbardKanamoriModel(MSection):
     u_effective = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the effective U parameter (u - j).
         """,
@@ -418,7 +417,7 @@ class HubbardKanamoriModel(MSection):
     slater_integrals = Quantity(
         type=np.float64,
         shape=[3],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the Slater integrals (F0, F2, F4) in spherical harmonics used to derive
         the local Hubbard interactions:
@@ -436,8 +435,8 @@ class HubbardKanamoriModel(MSection):
 
     umn = Quantity(
         type=np.float64,
-        shape=["n_orbital", "n_orbital"],
-        unit="joule",
+        shape=['n_orbital', 'n_orbital'],
+        unit='joule',
         description="""
         Value of the local Coulomb interaction matrix.
         """,
@@ -466,7 +465,7 @@ class Pseudopotential(MSection):
     )
 
     type = Quantity(
-        type=MEnum("US V", "US MBK", "PAW"),
+        type=MEnum('US V', 'US MBK', 'PAW'),
         shape=[],
         description="""
         Pseudopotential classification.
@@ -490,7 +489,7 @@ class Pseudopotential(MSection):
     cutoff = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Minimum recommended spherical cutoff energy for any plane-wave basis set
         using the pseudopotential.
@@ -499,7 +498,7 @@ class Pseudopotential(MSection):
 
     xc_functional_name = Quantity(
         type=str,
-        shape=["*"],
+        shape=['*'],
         description="""
         Name of the exchange-correlation functional used to generate the pseudopotential.
         Follows the libxc naming convention.
@@ -529,14 +528,14 @@ class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
     """
 
     quantities: list[str] = [
-        "n_quantum_number",
-        "l_quantum_number",
-        "ml_quantum_number",
-        "ms_quantum_bool",
-        "j_quantum_number",
-        "mj_quantum_number",
-        "occupation",
-        "degeneracy",
+        'n_quantum_number',
+        'l_quantum_number',
+        'ml_quantum_number',
+        'ms_quantum_bool',
+        'j_quantum_number',
+        'mj_quantum_number',
+        'occupation',
+        'degeneracy',
     ]
     s_quantum_number = 0.5
     nominal_occuption = 1.0
@@ -547,30 +546,30 @@ class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
     ml_quantum_numbers = {k: invert_dict(v) for k, v in ml_quantum_symbols.items()}
 
     ms_quantum_map = (True, False)
-    ms_quantum_symbols = dict(zip(ms_quantum_map, ("up", "down")))
+    ms_quantum_symbols = dict(zip(ms_quantum_map, ('up', 'down')))
     ms_quantum_values = dict(zip(ms_quantum_map, (s_quantum_number, -s_quantum_number)))
 
     def __setattr__(self, name, value):
-        if name == "l_quantum_number":
+        if name == 'l_quantum_number':
             try:
                 value = abs(value)
             except TypeError:
                 return
             if self.n_quantum_number is not None:
                 if value > self.n_quantum_number - 1:
-                    raise ValueError(f"Invalid value for {name}: {value}")
-        elif name == "j_quantum_number":
+                    raise ValueError(f'Invalid value for {name}: {value}')
+        elif name == 'j_quantum_number':
             try:
                 value = [abs(x) for x in value]
             except TypeError:
                 return
-        elif name == "ml_quantum_number":
+        elif name == 'ml_quantum_number':
             if isinstance(value, int):
                 if value not in self.ml_quantum_symbols[self.l_quantum_number]:
-                    raise ValueError(f"Invalid value for {name}: {value}")
-        elif name == "s_quantum_number":
+                    raise ValueError(f'Invalid value for {name}: {value}')
+        elif name == 's_quantum_number':
             raise AttributeError(
-                "Cannot alter the spin quantum number $s$ of a single-electron state."
+                'Cannot alter the spin quantum number $s$ of a single-electron state.'
             )
         super().__setattr__(name, value)
 
@@ -615,7 +614,7 @@ class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
                 2 * self.l_quantum_number + 1
             )  # TODO: replace with RussellSaundersState.multiplicity
         except TypeError:
-            raise ValueError("Cannot get $l$ degeneracy without $l$.")
+            raise ValueError('Cannot get $l$ degeneracy without $l$.')
 
     def set_degeneracy(self) -> int:
         """Set the degeneracy based on how specifically determined the quantum state is.
@@ -672,7 +671,7 @@ class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
     )
     j_quantum_number = Quantity(
         type=np.float64,
-        shape=["1..2"],
+        shape=['1..2'],
         description="""
         Total angular momentum quantum number $j = |l-s| ... l+s$.
         **Necessary with strong L-S coupling or non-collinear spin systems.**
@@ -680,7 +679,7 @@ class SingleElectronState(MSection):  # inherit from AtomicOrbitalState?
     )
     mj_quantum_number = Quantity(
         type=np.float64,
-        shape=["*"],
+        shape=['*'],
         description="""
         Azimuthal projection of the $j$ vector.
         **Necessary with strong L-S coupling or non-collinear spin systems.**
@@ -713,16 +712,16 @@ class CoreHole(SingleElectronState):
     Any missing quantum numbers indicate some level of arbitrariness in the choice of the core hole, represented in the degeneracy.
     """
 
-    quantities: list[str] = SingleElectronState.quantities + ["n_electrons_excited"]
+    quantities: list[str] = SingleElectronState.quantities + ['n_electrons_excited']
 
     def __setattr__(self, name, value):
-        if name == "n_electrons_excited":
+        if name == 'n_electrons_excited':
             if value < 0.0:
-                raise ValueError("Number of excited electrons must be positive.")
+                raise ValueError('Number of excited electrons must be positive.')
             if value > 1.0:
-                raise ValueError("Number of excited electrons must be less than 1.")
-        elif name == "dscf_state":
-            if value == "initial":
+                raise ValueError('Number of excited electrons must be less than 1.')
+        elif name == 'dscf_state':
+            if value == 'initial':
                 self.n_electrons_excited = 0.0
                 self.degeneracy = 1
         super().__setattr__(name, value)
@@ -738,7 +737,7 @@ class CoreHole(SingleElectronState):
                 self.occupation = self.set_degeneracy() - self.n_electrons_excited
             except TypeError:
                 raise AttributeError(
-                    "Cannot set occupation without `n_electrons_excited`."
+                    'Cannot set occupation without `n_electrons_excited`.'
                 )
         return self.occupation
 
@@ -759,7 +758,7 @@ class CoreHole(SingleElectronState):
         """,
     )
     dscf_state = Quantity(
-        type=MEnum("initial", "final"),
+        type=MEnum('initial', 'final'),
         shape=[],
         description="""
         The $\\Delta$-SCF state tag, used to identify the role in the workflow of the same name.
@@ -827,7 +826,7 @@ class AtomParameters(MSection):
     mass = Quantity(
         type=np.float64,
         shape=[],
-        unit="kg",
+        unit='kg',
         description="""
         Mass of the atom.
         """,
@@ -855,7 +854,7 @@ class AtomParameters(MSection):
 
     orbitals = Quantity(
         type=str,
-        shape=["n_orbitals"],
+        shape=['n_orbitals'],
         description="""
         Label of the active orbitals of the atoms.
         """,
@@ -863,8 +862,8 @@ class AtomParameters(MSection):
 
     onsite_energies = Quantity(
         type=np.float64,
-        shape=["n_orbitals"],
-        unit="joule",
+        shape=['n_orbitals'],
+        unit='joule',
         description="""
         Values of the atomic onsite energy corresponding to each orbital.
         """,
@@ -873,7 +872,7 @@ class AtomParameters(MSection):
     charge = Quantity(
         type=np.float64,
         shape=[],
-        unit="coulomb",
+        unit='coulomb',
         description="""
         Total charge of the atom.
         """,
@@ -881,8 +880,8 @@ class AtomParameters(MSection):
 
     charges = Quantity(
         type=np.float64,
-        shape=["n_orbitals"],
-        unit="coulomb",
+        shape=['n_orbitals'],
+        unit='coulomb',
         description="""
         Values of the charge corresponding to each orbital.
         """,
@@ -943,7 +942,7 @@ class Photon(MSection):
 
     energy = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         description="""
         Photon energy.
         """,
@@ -997,7 +996,7 @@ class GaussianBasisGroup(MSection):
 
     contractions = Quantity(
         type=np.float64,
-        shape=["n_contractions", "n_exponents"],
+        shape=['n_contractions', 'n_exponents'],
         description="""
         contraction coefficients $c_{i j}$ defining the contracted basis functions with
         respect to *normalized* primitive Gaussian functions. They define the Gaussian
@@ -1007,8 +1006,8 @@ class GaussianBasisGroup(MSection):
 
     exponents = Quantity(
         type=np.float64,
-        shape=["n_exponents"],
-        unit="1 / meter ** 2",
+        shape=['n_exponents'],
+        unit='1 / meter ** 2',
         description="""
         Exponents $\\alpha_j$ of the Gaussian functions defining this basis set
         $exp(-\\alpha_j r^2)$. One should be careful about the units of the coefficients.
@@ -1017,7 +1016,7 @@ class GaussianBasisGroup(MSection):
 
     ls = Quantity(
         type=np.float64,
-        shape=["n_contractions"],
+        shape=['n_contractions'],
         description="""
         Azimuthal quantum number ($l$) values (of the angular part given by the spherical
         harmonic $Y_{l m}$ of the various contracted basis functions).
@@ -1082,7 +1081,7 @@ class OrbitalAPW(MSection):
     m_def = Section(validate=False)
 
     type = Quantity(
-        type=MEnum("APW", "LAPW", "LO", "spherical Dirac"),
+        type=MEnum('APW', 'LAPW', 'LO', 'spherical Dirac'),
         shape=[],
         description="""
         State
@@ -1141,8 +1140,8 @@ class OrbitalAPW(MSection):
 
     energy_parameter = Quantity(
         type=np.float64,
-        shape=["*"],
-        unit="joule",
+        shape=['*'],
+        unit='joule',
         description="""
         Reference energy parameter for the augmented plane wave (APW) basis set.
         Is used to set the energy parameter for each state.
@@ -1197,7 +1196,7 @@ class BasisSetMesh(MSection):
     m_def = Section(validate=False)
 
     shape = Quantity(
-        type=MEnum("cubic", "rectangular", "spherical", "ellipsoidal", "cylindrical"),
+        type=MEnum('cubic', 'rectangular', 'spherical', 'ellipsoidal', 'cylindrical'),
         shape=[],
         description="""
         Geometry of the basis set mesh.
@@ -1207,7 +1206,7 @@ class BasisSetMesh(MSection):
     box_lengths = Quantity(
         type=np.float64,
         shape=[3],
-        unit="meter",
+        unit='meter',
         description="""
         Dimensions of the box containing the basis set mesh.
         """,
@@ -1216,7 +1215,7 @@ class BasisSetMesh(MSection):
     radius = Quantity(
         type=np.float64,
         shape=[],
-        unit="meter",
+        unit='meter',
         description="""
         Radius of the sphere.
         """,
@@ -1224,8 +1223,8 @@ class BasisSetMesh(MSection):
 
     grid_spacing = Quantity(
         type=np.float64,
-        shape=["*"],
-        unit="meter",
+        shape=['*'],
+        unit='meter',
         description="""
         Grid spacing of a Cartesian mesh.
         """,
@@ -1234,7 +1233,7 @@ class BasisSetMesh(MSection):
     radius_lin_spacing = Quantity(
         type=np.float64,
         shape=[],
-        unit="meter",
+        unit='meter',
         description="""
         The equidistant spacing of the radial grid.
         """,
@@ -1283,14 +1282,14 @@ class BasisSet(BasisSetMesh):
 
     type = Quantity(
         type=MEnum(
-            "numeric AOs",
-            "gaussians",
-            "plane waves",
-            "psinc functions",
-            "real-space grid",
-            "pbeVaspFit2015",
-            "Koga",
-            "Bunge",
+            'numeric AOs',
+            'gaussians',
+            'plane waves',
+            'psinc functions',
+            'real-space grid',
+            'pbeVaspFit2015',
+            'Koga',
+            'Bunge',
         ),
         shape=[],
         description="""
@@ -1311,7 +1310,7 @@ class BasisSet(BasisSetMesh):
 
     scope = Quantity(
         type=str,
-        shape=["*"],
+        shape=['*'],
         description="""
         The extent of the electronic structure that the basis set encodes.
         The partitions could be energetic (e.g. `core`, `valence`) in nature,
@@ -1324,7 +1323,7 @@ class BasisSet(BasisSetMesh):
     cutoff = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Spherical cutoff in reciprocal space for a plane-wave basis set. It is the energy
         of the highest plane-wave ($\\frac{\\hbar^2|k+G|^2}{2m_e}$) included in the basis
@@ -1361,7 +1360,7 @@ class BasisSet(BasisSetMesh):
     )
 
     atom_parameters = Quantity(
-        type=Reference(SectionProxy("AtomParameters")),
+        type=Reference(SectionProxy('AtomParameters')),
         shape=[],
         description="""
         Reference to a particular atom parameter setup further specifying the basis set.
@@ -1391,17 +1390,17 @@ class BasisSetContainer(MSection):
     )
 
     basis_sets = [
-        "atom-centered orbitals",
-        "APW",
-        "LAPW",
-        "APW+lo",
-        "LAPW+lo",
-        "(L)APW",
-        "(L)APW+lo",
-        "plane waves",
-        "gaussians + plane waves",
-        "real-space grid",
-        "support functions",
+        'atom-centered orbitals',
+        'APW',
+        'LAPW',
+        'APW+lo',
+        'LAPW+lo',
+        '(L)APW',
+        '(L)APW+lo',
+        'plane waves',
+        'gaussians + plane waves',
+        'real-space grid',
+        'support functions',
         unavailable,
         not_processed,
     ]
@@ -1474,7 +1473,7 @@ class Interaction(MSection):
 
     atom_labels = Quantity(
         type=np.dtype(str),
-        shape=["n_interactions", "n_atoms"],
+        shape=['n_interactions', 'n_atoms'],
         description="""
         Labels of the atoms described by the interaction. Can be a list of lists for interaction groupings.
         """,
@@ -1512,7 +1511,7 @@ class Interaction(MSection):
         """,
     )
 
-    contributions = SubSection(sub_section=SectionProxy("Interaction"), repeats=True)
+    contributions = SubSection(sub_section=SectionProxy('Interaction'), repeats=True)
 
 
 class Model(MSection):
@@ -1610,8 +1609,8 @@ class XCFunctional(Model):
 
     def normalize_hybrid(self):
         for hyb in self.hybrid:
-            if "exact_exchange_mixing_factor" in hyb.parameters.keys() and not hyb.name:
-                hyb.name += "+alpha"
+            if 'exact_exchange_mixing_factor' in hyb.parameters.keys() and not hyb.name:
+                hyb.name += '+alpha'
 
 
 class DFT(MSection):
@@ -1947,7 +1946,7 @@ class Wannier(MSection):
 
     energy_window_outer = Quantity(
         type=np.float64,
-        unit="electron_volt",
+        unit='electron_volt',
         shape=[2],
         description="""
         Bottom and top of the outer energy window used for the projection.
@@ -1956,7 +1955,7 @@ class Wannier(MSection):
 
     energy_window_inner = Quantity(
         type=np.float64,
-        unit="electron_volt",
+        unit='electron_volt',
         shape=[2],
         description="""
         Bottom and top of the inner energy window used for the projection.
@@ -2002,7 +2001,7 @@ class HoppingMatrix(MSection):
 
     degeneracy_factors = Quantity(
         type=np.int32,
-        shape=["n_wigner_seitz_points"],
+        shape=['n_wigner_seitz_points'],
         description="""
         Degeneracy of each Wigner-Seitz grid point.
         """,
@@ -2010,7 +2009,7 @@ class HoppingMatrix(MSection):
 
     value = Quantity(
         type=np.float64,
-        shape=["n_wigner_seitz_points", "n_orbitals * n_orbitals", 7],
+        shape=['n_wigner_seitz_points', 'n_orbitals * n_orbitals', 7],
         description="""
         Real space hopping matrix for each Wigner-Seitz grid point. The elements are
         defined as follows:
@@ -2051,7 +2050,7 @@ class LatticeModelHamiltonian(MSection):
 
     t_parameters = Quantity(
         type=np.complex128,
-        shape=["n_neighbors"],
+        shape=['n_neighbors'],
         description="""
         Hopping parameters for simple models, with [t, t`, t``, etc].
         """,
@@ -2081,25 +2080,25 @@ class CoreHoleSpectra(MSection):
 
     edge = Quantity(
         type=MEnum(
-            "K",
-            "L1",
-            "L2",
-            "L3",
-            "L23",
-            "M1",
-            "M2",
-            "M3",
-            "M23",
-            "M4",
-            "M5",
-            "M45",
-            "N1",
-            "N2",
-            "N3",
-            "N23",
-            "N4",
-            "N5",
-            "N45",
+            'K',
+            'L1',
+            'L2',
+            'L3',
+            'L23',
+            'M1',
+            'M2',
+            'M3',
+            'M23',
+            'M4',
+            'M5',
+            'M45',
+            'N1',
+            'N2',
+            'N3',
+            'N23',
+            'N4',
+            'N5',
+            'N45',
         ),
         description="""
         Edge to be calculated for the core-hole spectra.
@@ -2107,7 +2106,7 @@ class CoreHoleSpectra(MSection):
     )
 
     mode = Quantity(
-        type=MEnum("absorption", "emission"),
+        type=MEnum('absorption', 'emission'),
         description="""
         Type of spectra to be calculated: absorption or emission.
         """,
@@ -2115,7 +2114,7 @@ class CoreHoleSpectra(MSection):
 
     broadening = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         description="""
         Core-hole lifetime broadening applied to the edge spectra in full-width at half maximum.
         """,
@@ -2158,7 +2157,7 @@ class ExcitedStateMethodology(MSection):
 
     broadening = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         description="""
         Lifetime broadening applied to the spectra in full-width at half maximum.
         """,
@@ -2198,14 +2197,14 @@ class GW(ExcitedStateMethodology):
 
     type = Quantity(
         type=MEnum(
-            "G0W0",
-            "scGW",
-            "scGW0",
-            "scG0W",
-            "ev-scGW0",
-            "ev-scGW",
-            "qp-scGW0",
-            "qp-scGW",
+            'G0W0',
+            'scGW',
+            'scGW0',
+            'scG0W',
+            'ev-scGW0',
+            'ev-scGW',
+            'qp-scGW0',
+            'qp-scGW',
         ),
         shape=[],
         description="""
@@ -2235,13 +2234,13 @@ class GW(ExcitedStateMethodology):
 
     analytical_continuation = Quantity(
         type=MEnum(
-            "pade",
-            "contour_deformation",
-            "ppm_GodbyNeeds",
-            "ppm_HybertsenLouie",
-            "ppm_vonderLindenHorsh",
-            "ppm_FaridEngel",
-            "multi_pole",
+            'pade',
+            'contour_deformation',
+            'ppm_GodbyNeeds',
+            'ppm_HybertsenLouie',
+            'ppm_vonderLindenHorsh',
+            'ppm_FaridEngel',
+            'multi_pole',
         ),
         shape=[],
         description="""
@@ -2287,7 +2286,7 @@ class BSE(ExcitedStateMethodology):
     m_def = Section(validate=False)
 
     type = Quantity(
-        type=MEnum("Singlet", "Triplet", "IP", "RPA"),
+        type=MEnum('Singlet', 'Triplet', 'IP', 'RPA'),
         shape=[],
         description="""
         Type of BSE hamiltonian solved:
@@ -2317,7 +2316,7 @@ class BSE(ExcitedStateMethodology):
     )
 
     solver = Quantity(
-        type=MEnum("Full-diagonalization", "Lanczos-Haydock", "GMRES", "SLEPc", "TDA"),
+        type=MEnum('Full-diagonalization', 'Lanczos-Haydock', 'GMRES', 'SLEPc', 'TDA'),
         shape=[],
         description="""
         Solver algotithm used to diagonalize the BSE Hamiltonian.
@@ -2360,7 +2359,7 @@ class DMFT(MSection):
 
     n_correlated_orbitals = Quantity(
         type=np.int32,
-        shape=["n_impurities"],
+        shape=['n_impurities'],
         description="""
         Number of correlated orbitals per impurity.
         """,
@@ -2368,7 +2367,7 @@ class DMFT(MSection):
 
     n_electrons = Quantity(
         type=np.float64,
-        shape=["n_impurities"],
+        shape=['n_impurities'],
         description="""
         Initial number of valence electrons per impurity.
         """,
@@ -2376,7 +2375,7 @@ class DMFT(MSection):
 
     inverse_temperature = Quantity(
         type=np.float64,
-        unit="1/joule",
+        unit='1/joule',
         shape=[],
         description="""
         Inverse temperature = 1/(kB*T).
@@ -2384,7 +2383,7 @@ class DMFT(MSection):
     )
 
     magnetic_state = Quantity(
-        type=MEnum("paramagnetic", "ferromagnetic", "antiferromagnetic"),
+        type=MEnum('paramagnetic', 'ferromagnetic', 'antiferromagnetic'),
         shape=[],
         description="""
         Magnetic state in which the DMFT calculation is done:
@@ -2403,17 +2402,17 @@ class DMFT(MSection):
 
     impurity_solver = Quantity(
         type=MEnum(
-            "CT-INT",
-            "CT-HYB",
-            "CT-AUX",
-            "ED",
-            "NRG",
-            "MPS",
-            "IPT",
-            "NCA",
-            "OCA",
-            "slave_bosons",
-            "hubbard_I",
+            'CT-INT',
+            'CT-HYB',
+            'CT-AUX',
+            'ED',
+            'NRG',
+            'MPS',
+            'IPT',
+            'NCA',
+            'OCA',
+            'slave_bosons',
+            'hubbard_I',
         ),
         shape=[],
         description="""
@@ -2466,7 +2465,7 @@ class NeighborSearching(MSection):
     neighbor_update_cutoff = Quantity(
         type=np.float64,
         shape=[],
-        unit="m",
+        unit='m',
         description="""
         The distance cutoff for determining the neighbor list.
         """,
@@ -2484,7 +2483,7 @@ class ForceCalculations(MSection):
     vdw_cutoff = Quantity(
         type=np.float64,
         shape=[],
-        unit="m",
+        unit='m',
         description="""
         Cutoff for calculating VDW forces.
         """,
@@ -2492,12 +2491,12 @@ class ForceCalculations(MSection):
 
     coulomb_type = Quantity(
         type=MEnum(
-            "cutoff",
-            "ewald",
-            "multilevel_summation",
-            "particle_mesh_ewald",
-            "particle_particle_particle_mesh",
-            "reaction_field",
+            'cutoff',
+            'ewald',
+            'multilevel_summation',
+            'particle_mesh_ewald',
+            'particle_particle_particle_mesh',
+            'reaction_field',
         ),
         shape=[],
         description="""
@@ -2532,7 +2531,7 @@ class ForceCalculations(MSection):
     coulomb_cutoff = Quantity(
         type=np.float64,
         shape=[],
-        unit="m",
+        unit='m',
         description="""
         Cutoff for calculating short-ranged Coulomb forces.
         """,
@@ -2622,7 +2621,7 @@ class Electronic(MSection):
     charge = Quantity(
         type=np.float64,
         shape=[],
-        unit="coulomb",
+        unit='coulomb',
         description="""
         Stores the total charge of the system.
         """,
@@ -2666,9 +2665,9 @@ class Electronic(MSection):
     relativity_method = Quantity(
         type=MEnum(
             [
-                "scalar_relativistic",
-                "pseudo_scalar_relativistic",
-                "scalar_relativistic_atomic_ZORA",
+                'scalar_relativistic',
+                'pseudo_scalar_relativistic',
+                'scalar_relativistic_atomic_ZORA',
             ]
         ),
         shape=[],
@@ -2729,7 +2728,7 @@ class Method(ArchiveSection):
     m_def = Section(validate=False)
 
     label = Quantity(
-        type=MEnum("DFT", "TB", "GW", "DMFT", "BSE", "kMC", "NMR"),
+        type=MEnum('DFT', 'TB', 'GW', 'DMFT', 'BSE', 'kMC', 'NMR'),
         description="""
         Label to identify the method applied in the simulation. Allowed values are:
 
@@ -2769,7 +2768,7 @@ class Method(ArchiveSection):
     )
 
     starting_method_ref = Quantity(
-        type=Reference(SectionProxy("Method")),
+        type=Reference(SectionProxy('Method')),
         shape=[],
         description="""
         Links the current section method to a section method containing the starting
@@ -2779,7 +2778,7 @@ class Method(ArchiveSection):
     )
 
     core_method_ref = Quantity(
-        type=Reference(SectionProxy("Method")),
+        type=Reference(SectionProxy('Method')),
         shape=[],
         description="""
         Links the current section method to a section method containing the core settings.
@@ -2796,8 +2795,8 @@ class Method(ArchiveSection):
     )
 
     methods_ref = Quantity(
-        type=Reference(SectionProxy("Method")),
-        shape=["n_references"],
+        type=Reference(SectionProxy('Method')),
+        shape=['n_references'],
         description="""
         Links the section method to other method sections. For instance, one calculation
         is a perturbation performed using a self-consistent field (SCF) calculation as
@@ -2837,15 +2836,15 @@ class Method(ArchiveSection):
     scf = SubSection(sub_section=Scf.m_def)
 
     atom_parameters = SubSection(
-        sub_section=AtomParameters.m_def, repeats=True, label_quantity="label"
+        sub_section=AtomParameters.m_def, repeats=True, label_quantity='label'
     )
 
     molecule_parameters = SubSection(
-        sub_section=MoleculeParameters.m_def, repeats=True, label_quantity="label"
+        sub_section=MoleculeParameters.m_def, repeats=True, label_quantity='label'
     )
 
     electrons_representation = SubSection(
-        sub_section=BasisSetContainer.m_def, repeats=True, label_quantity="type"
+        sub_section=BasisSetContainer.m_def, repeats=True, label_quantity='type'
     )
 
     photon = SubSection(sub_section=Photon.m_def, repeats=True)

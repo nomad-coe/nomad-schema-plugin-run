@@ -17,28 +17,28 @@
 #
 
 import numpy as np
+from nomad.datamodel.data import ArchiveSection
+from nomad.datamodel.metainfo.common import (
+    FastAccess,
+    PropertySection,
+    ProvenanceTracker,
+)
 from nomad.metainfo import (
-    MSection,
-    MCategory,
     Category,
+    HDF5Reference,
+    MCategory,
+    MEnum,
+    MSection,
     Package,
     Quantity,
-    Section,
-    SubSection,
-    SectionProxy,
     Reference,
-    MEnum,
-    HDF5Reference,
+    Section,
+    SectionProxy,
+    SubSection,
 )
-from nomad.datamodel.metainfo.common import (
-    ProvenanceTracker,
-    PropertySection,
-    FastAccess,
-)
-from .system import System, AtomsGroup
-from .method import Method, HoppingMatrix
-from nomad.datamodel.data import ArchiveSection
 
+from .method import HoppingMatrix, Method
+from .system import AtomsGroup, System
 
 m_package = Package()
 
@@ -252,7 +252,7 @@ class EnergyEntry(Atomic):
     reference = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the reference energy to be subtracted from value to obtain a
         code-independent value of the energy.
@@ -263,7 +263,7 @@ class EnergyEntry(Atomic):
     value = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the energy of the unit cell.
         """,
@@ -272,7 +272,7 @@ class EnergyEntry(Atomic):
     value_per_atom = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the energy normalized by the total number of atoms in the simulation
         cell.
@@ -282,8 +282,8 @@ class EnergyEntry(Atomic):
     # TODO rename this to value_atomic
     values_per_atom = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms"],
-        unit="joule",
+        shape=['n_atoms'],
+        unit='joule',
         description="""
         Value of the atom-resolved energies.
         """,
@@ -292,7 +292,7 @@ class EnergyEntry(Atomic):
     potential = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the potential energy.
         """,
@@ -301,7 +301,7 @@ class EnergyEntry(Atomic):
     kinetic = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the kinetic energy.
         """,
@@ -310,7 +310,7 @@ class EnergyEntry(Atomic):
     correction = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the correction to the energy.
         """,
@@ -319,7 +319,7 @@ class EnergyEntry(Atomic):
     short_range = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the short range contributions to the energy.
         """,
@@ -328,7 +328,7 @@ class EnergyEntry(Atomic):
     long_range = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the long range contributions to the energy.
         """,
@@ -526,7 +526,7 @@ class Energy(MSection):
     enthalpy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the calculated enthalpy per cell i.e. energy_total + pressure * volume.
         """,
@@ -536,7 +536,7 @@ class Energy(MSection):
     entropy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule / kelvin",
+        unit='joule / kelvin',
         description="""
         Value of the entropy.
         """,
@@ -545,7 +545,7 @@ class Energy(MSection):
     chemical_potential = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the chemical potential.
         """,
@@ -554,7 +554,7 @@ class Energy(MSection):
     internal = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the internal energy.
         """,
@@ -599,7 +599,7 @@ class Energy(MSection):
     change = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Stores the change of total energy with respect to the previous step.
         """,
@@ -609,7 +609,7 @@ class Energy(MSection):
     fermi = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Fermi energy (separates occupied from unoccupied single-particle states)
         """,
@@ -618,7 +618,7 @@ class Energy(MSection):
 
     highest_occupied = Quantity(
         type=np.dtype(np.float64),
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         The highest occupied energy.
@@ -627,7 +627,7 @@ class Energy(MSection):
 
     lowest_unoccupied = Quantity(
         type=np.dtype(np.float64),
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         The lowest unoccupied energy.
@@ -665,8 +665,8 @@ class ForcesEntry(Atomic):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", 3],
-        unit="newton",
+        shape=['n_atoms', 3],
+        unit='newton',
         description="""
         Value of the forces acting on the atoms. This is calculated as minus gradient of
         the corresponding energy type or contribution **including** constraints, if
@@ -679,8 +679,8 @@ class ForcesEntry(Atomic):
 
     value_raw = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", 3],
-        unit="newton",
+        shape=['n_atoms', 3],
+        unit='newton',
         description="""
         Value of the forces acting on the atoms **not including** such as fixed atoms,
         distances, angles, dihedrals, etc.""",
@@ -749,7 +749,7 @@ class StressEntry(Atomic):
     value = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="joule/meter**3",
+        unit='joule/meter**3',
         description="""
         Value of the stress on the simulation cell. It is given as the functional
         derivative of the corresponding energy with respect to the deformation tensor.
@@ -758,8 +758,8 @@ class StressEntry(Atomic):
 
     values_per_atom = Quantity(
         type=np.dtype(np.float64),
-        shape=["number_of_atoms", 3, 3],
-        unit="joule/meter**3",
+        shape=['number_of_atoms', 3, 3],
+        unit='joule/meter**3',
         description="""
         Value of the atom-resolved stresses.
         """,
@@ -808,7 +808,7 @@ class ChargesValue(AtomicValues):
     value = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="coulomb",
+        unit='coulomb',
         description="""
         Value of the charge projected on atom and orbital.
         """,
@@ -849,8 +849,8 @@ class Charges(Atomic):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms"],
-        unit="coulomb",
+        shape=['n_atoms'],
+        unit='coulomb',
         description="""
         Value of the atomic charges calculated through analysis_method.
         """,
@@ -858,7 +858,7 @@ class Charges(Atomic):
 
     n_electrons = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Value of the number of electrons on the atoms.
         """,
@@ -868,7 +868,7 @@ class Charges(Atomic):
     # renamed population
     spins = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Value of the atomic spins.
         """,
@@ -877,7 +877,7 @@ class Charges(Atomic):
     total = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="coulomb",
+        unit='coulomb',
         description="""
         Value of the total charge of the system.
         """,
@@ -906,14 +906,14 @@ class BandGapDeprecated(PropertySection):
     value = Quantity(
         type=np.float64,
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         The actual value of the band gap. Value of zero indicates a vanishing band gap and
         is distinct from sources lacking any band gap measurement or calculation.""",
     )
 
     type = Quantity(
-        type=MEnum("direct", "indirect"),
+        type=MEnum('direct', 'indirect'),
         shape=[],
         description="""
         Band gap type.
@@ -922,7 +922,7 @@ class BandGapDeprecated(PropertySection):
 
     energy_highest_occupied = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         The highest occupied energy.
@@ -931,7 +931,7 @@ class BandGapDeprecated(PropertySection):
 
     energy_lowest_unoccupied = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         The lowest unoccupied energy.
@@ -973,7 +973,7 @@ class BandEnergies(MSection):
 
     kpoints = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_kpoints", 3],
+        shape=['n_kpoints', 3],
         description="""
         Fractional coordinates of the $k$ or $q$ points (in the basis of the reciprocal-
         lattice vectors) for which the eigenvalues are evaluated.
@@ -982,7 +982,7 @@ class BandEnergies(MSection):
 
     kpoints_weights = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_kpoints"],
+        shape=['n_kpoints'],
         description="""
         Weights of the $k$ points in the calculation of the band energy.
         """,
@@ -990,7 +990,7 @@ class BandEnergies(MSection):
 
     kpoints_multiplicities = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_kpoints"],
+        shape=['n_kpoints'],
         description="""
         Multiplicities of the $k$ point (i.e., how many distinct points per cell this
         expands to after applying all symmetries). This defaults to 1. If expansion is
@@ -1010,7 +1010,7 @@ class BandEnergies(MSection):
 
     orbital_labels = Quantity(
         type=str,
-        shape=["n_bands"],
+        shape=['n_bands'],
         description="""
         Labels corresponding to each band/orbital
         """,
@@ -1018,7 +1018,7 @@ class BandEnergies(MSection):
 
     occupations = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
         description="""
         Values of the occupations of the bands.
         """,
@@ -1026,8 +1026,8 @@ class BandEnergies(MSection):
 
     energies = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Values of the band energies.
         """,
@@ -1035,7 +1035,7 @@ class BandEnergies(MSection):
 
     qp_linearization_prefactor = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
         description="""
         Values of the GW quasi particle linearization pre-factor.
         """,
@@ -1043,8 +1043,8 @@ class BandEnergies(MSection):
 
     value_xc_potential = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the GW exchange-correlation potential.
         """,
@@ -1052,8 +1052,8 @@ class BandEnergies(MSection):
 
     value_correlation = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the GW correlation energy.
         """,
@@ -1061,8 +1061,8 @@ class BandEnergies(MSection):
 
     value_exchange = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the GW exchange energy.
         """,
@@ -1070,8 +1070,8 @@ class BandEnergies(MSection):
 
     value_xc = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the GW exchange-correlation energy.
         """,
@@ -1079,8 +1079,8 @@ class BandEnergies(MSection):
 
     value_qp = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the GW quasi-particle energy.
         """,
@@ -1088,8 +1088,8 @@ class BandEnergies(MSection):
 
     value_ks = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the Kohn-Sham energy.
         """,
@@ -1097,8 +1097,8 @@ class BandEnergies(MSection):
 
     value_ks_xc = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_spin_channels", "n_kpoints", "n_bands"],
-        unit="joule",
+        shape=['n_spin_channels', 'n_kpoints', 'n_bands'],
+        unit='joule',
         description="""
         Diagonal matrix elements of the Kohn-Sham exchange-correlation energy.
         """,
@@ -1131,7 +1131,7 @@ class BandStructure(MSection):
     reciprocal_cell = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="1 / meter",
+        unit='1 / meter',
         description="""
         The reciprocal cell within which the band structure is calculated.
         """,
@@ -1141,7 +1141,7 @@ class BandStructure(MSection):
 
     energy_fermi = Quantity(
         type=np.dtype(np.float64),
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         Fermi energy.
@@ -1230,8 +1230,8 @@ class DosValues(AtomicValues):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_energies"],
-        unit="1/joule",
+        shape=['n_energies'],
+        unit='1/joule',
         description="""
         Values of DOS, i.e. number of states for a given energy. The set of discrete
         energy values is given in energies.
@@ -1240,7 +1240,7 @@ class DosValues(AtomicValues):
 
     value_integrated = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_energies"],
+        shape=['n_energies'],
         description="""
         A cumulative DOS starting from the mimunum energy available up to the energy level specified in `energies`.
         """,
@@ -1276,8 +1276,8 @@ class Dos(Atomic):
 
     energies = Quantity(
         type=np.float64,
-        shape=["n_energies"],
-        unit="joule",
+        shape=['n_energies'],
+        unit='joule',
         description="""
         Contains the set of discrete energy values for the DOS.
         """,
@@ -1285,7 +1285,7 @@ class Dos(Atomic):
 
     energy_fermi = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         Fermi energy.
@@ -1294,7 +1294,7 @@ class Dos(Atomic):
 
     energy_ref = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         Energy level denoting the origin along the energy axis, used for comparison and visualization.
@@ -1397,7 +1397,7 @@ class MultipolesEntry(Atomic):
     origin = Quantity(
         type=np.dtype(np.float64),
         shape=[3],
-        unit="meter",
+        unit='meter',
         description="""
         Origin in cartesian space.
         """,
@@ -1413,7 +1413,7 @@ class MultipolesEntry(Atomic):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", "n_multipoles"],
+        shape=['n_atoms', 'n_multipoles'],
         description="""
         Value of the multipoles projected unto the atoms.
         """,
@@ -1421,7 +1421,7 @@ class MultipolesEntry(Atomic):
 
     total = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_multipoles"],
+        shape=['n_multipoles'],
         description="""
         Total value of the multipoles.
         """,
@@ -1466,7 +1466,7 @@ class Thermodynamics(MSection):
     enthalpy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the calculated enthalpy per cell i.e. energy_total + pressure * volume.
         """,
@@ -1475,7 +1475,7 @@ class Thermodynamics(MSection):
     entropy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule / kelvin",
+        unit='joule / kelvin',
         description="""
         Value of the entropy.
         """,
@@ -1484,7 +1484,7 @@ class Thermodynamics(MSection):
     chemical_potential = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the chemical potential.
         """,
@@ -1493,7 +1493,7 @@ class Thermodynamics(MSection):
     kinetic_energy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the kinetic energy.
         """,
@@ -1502,7 +1502,7 @@ class Thermodynamics(MSection):
     potential_energy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the potential energy.
         """,
@@ -1511,7 +1511,7 @@ class Thermodynamics(MSection):
     internal_energy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the internal energy.
         """,
@@ -1520,7 +1520,7 @@ class Thermodynamics(MSection):
     vibrational_free_energy_at_constant_volume = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the vibrational free energy per cell unit at constant volume.
         """,
@@ -1529,7 +1529,7 @@ class Thermodynamics(MSection):
     pressure = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="pascal",
+        unit='pascal',
         description="""
         Value of the pressure of the system.
         """,
@@ -1538,7 +1538,7 @@ class Thermodynamics(MSection):
     temperature = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="kelvin",
+        unit='kelvin',
         description="""
         Value of the temperature of the system at which the properties are calculated.
         """,
@@ -1547,7 +1547,7 @@ class Thermodynamics(MSection):
     volume = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="m ** 3",
+        unit='m ** 3',
         description="""
         Value of the volume of the system at which the properties are calculated.
         """,
@@ -1556,7 +1556,7 @@ class Thermodynamics(MSection):
     heat_capacity_c_v = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule / kelvin",
+        unit='joule / kelvin',
         description="""
         Stores the heat capacity per cell unit at constant volume.
         """,
@@ -1565,7 +1565,7 @@ class Thermodynamics(MSection):
     heat_capacity_c_p = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule / kelvin",
+        unit='joule / kelvin',
         description="""
         Stores the heat capacity per cell unit at constant pressure.
         """,
@@ -1631,7 +1631,7 @@ class Volumetric(MSection):
     displacements = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="meter",
+        unit='meter',
         description="""
         displacement vectors between grid points along each axis; same indexing rules as
         lattice_vectors.  In many cases, displacements and number of points are related to
@@ -1643,7 +1643,7 @@ class Volumetric(MSection):
     origin = Quantity(
         type=np.dtype(np.float64),
         shape=[3],
-        unit="meter",
+        unit='meter',
         description="""
         location of the first grid point; same coordinate system as atom_positions when
         applicable.
@@ -1652,7 +1652,7 @@ class Volumetric(MSection):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["multiplicity", "n_x", "n_y", "n_z"],
+        shape=['multiplicity', 'n_x', 'n_y', 'n_z'],
         description="""
         Values of the volumetric data defined by kind.
         """,
@@ -1668,8 +1668,8 @@ class PotentialValue(Volumetric):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["multiplicity", "n_x", "n_y", "n_z"],
-        unit="J / m ** 3",
+        shape=['multiplicity', 'n_x', 'n_y', 'n_z'],
+        unit='J / m ** 3',
         description="""
         Values of the potential evaluated at each grid point.
         """,
@@ -1697,8 +1697,8 @@ class Density(Volumetric):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["multiplicity", "n_x", "n_y", "n_z"],
-        unit="1 / m ** 3",
+        shape=['multiplicity', 'n_x', 'n_y', 'n_z'],
+        unit='1 / m ** 3',
         description="""
         Values of the potential evaluated at each grid point.
         """,
@@ -1739,8 +1739,8 @@ class Spectra(ArchiveSection):
 
     excitation_energies = Quantity(
         type=np.float64,
-        shape=["n_energies"],
-        unit="joule",
+        shape=['n_energies'],
+        unit='joule',
         description="""
         Excitation energies.
         """,
@@ -1749,7 +1749,7 @@ class Spectra(ArchiveSection):
 
     energy_zero_ref = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         shape=[],
         description="""
         Reference energy to set the origin of the spectra to 0 eV.
@@ -1758,7 +1758,7 @@ class Spectra(ArchiveSection):
 
     intensities = Quantity(
         type=np.float64,
-        shape=["n_energies"],
+        shape=['n_energies'],
         description="""
         Excitation intensities in arbitrary units.
         """,
@@ -1774,7 +1774,7 @@ class Spectra(ArchiveSection):
 
     oscillator_strengths = Quantity(
         type=np.float64,
-        shape=["n_energies"],
+        shape=['n_energies'],
         description="""
         Excited states oscillator strengths.
         """,
@@ -1782,8 +1782,8 @@ class Spectra(ArchiveSection):
 
     transition_dipole_moments = Quantity(
         type=np.float64,
-        shape=["n_energies", 3],
-        unit="coulomb * meter",
+        shape=['n_energies', 3],
+        unit='coulomb * meter',
         description="""
         Transition dipole moments.
         """,
@@ -1802,7 +1802,7 @@ class GreensFunctions(MSection):
     m_def = Section(validate=False)
 
     type = Quantity(
-        type=MEnum("impurity", "lattice"),
+        type=MEnum('impurity', 'lattice'),
         description="""
         Type of Green's function calculated from the mapping of the Hubbard-Kanamori model
         into the Anderson impurity model. These calculations are converged if both types of
@@ -1812,7 +1812,7 @@ class GreensFunctions(MSection):
 
     matsubara_freq = Quantity(
         type=np.float64,
-        shape=["*"],
+        shape=['*'],
         description="""
         Matsubara frequencies (imaginary frequencies). Can be either positives or both positives
         and negatives.
@@ -1821,7 +1821,7 @@ class GreensFunctions(MSection):
 
     tau = Quantity(
         type=np.float64,
-        shape=["n_tau"],
+        shape=['n_tau'],
         description="""
         Imaginary times.
         """,
@@ -1829,7 +1829,7 @@ class GreensFunctions(MSection):
 
     frequencies = Quantity(
         type=np.float64,
-        shape=["n_frequencies"],
+        shape=['n_frequencies'],
         description="""
         Real space frequencies.
         """,
@@ -1837,7 +1837,7 @@ class GreensFunctions(MSection):
 
     chemical_potential = Quantity(
         type=np.float64,
-        unit="joule",
+        unit='joule',
         description="""
         Chemical potential.
         """,
@@ -1845,7 +1845,7 @@ class GreensFunctions(MSection):
 
     self_energy_iw = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "*"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', '*'],
         description="""
         Self-energy tensor in Matsubara frequencies.
         """,
@@ -1853,7 +1853,7 @@ class GreensFunctions(MSection):
 
     greens_function_iw = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "*"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', '*'],
         description="""
         Green's function tensor in Matsubara frequencies.
         """,
@@ -1861,7 +1861,7 @@ class GreensFunctions(MSection):
 
     hybridization_function_iw = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "*"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', '*'],
         description="""
         Hybridization function tensor in Matsubara frequencies.
         """,
@@ -1869,7 +1869,7 @@ class GreensFunctions(MSection):
 
     greens_function_tau = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "n_tau"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', 'n_tau'],
         description="""
         Green's function tensor in tau (imaginary time).
         """,
@@ -1877,7 +1877,7 @@ class GreensFunctions(MSection):
 
     self_energy_freq = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "n_frequencies"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', 'n_frequencies'],
         description="""
         Self-energy tensor in real frequencies.
         """,
@@ -1885,7 +1885,7 @@ class GreensFunctions(MSection):
 
     greens_function_freq = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "n_frequencies"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', 'n_frequencies'],
         description="""
         Green's function tensor in real frequencies.
         """,
@@ -1893,7 +1893,7 @@ class GreensFunctions(MSection):
 
     hybridization_function_freq = Quantity(
         type=np.complex128,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals", "n_frequencies"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals', 'n_frequencies'],
         description="""
         Hybridization function tensor in real frequencies.
         """,
@@ -1901,7 +1901,7 @@ class GreensFunctions(MSection):
 
     orbital_occupations = Quantity(
         type=np.float64,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals'],
         description="""
         Orbital occupation per correlated atom in the unit cell and per spin.
         """,
@@ -1909,7 +1909,7 @@ class GreensFunctions(MSection):
 
     quasiparticle_weights = Quantity(
         type=np.float64,
-        shape=["n_atoms_per_unit_cell", 2, "n_correlated_orbitals"],
+        shape=['n_atoms_per_unit_cell', 2, 'n_correlated_orbitals'],
         description="""
         Quasiparticle weights of each orbital per site and spin. Calculated from:
             Z = inv(1.0 - d [Re Sigma] / dw at w=0)
@@ -1951,7 +1951,7 @@ class VibrationalFrequenciesValues(MSection):
 
     activity = Quantity(
         type=str,
-        shape=["n_vibrations"],
+        shape=['n_vibrations'],
         description="""
         Describes the activity corresponding to each of the value of the vibration
         spectrum.
@@ -1960,7 +1960,7 @@ class VibrationalFrequenciesValues(MSection):
 
     intensity = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_vibrations"],
+        shape=['n_vibrations'],
         description="""
         Intensity of the vibration.
         """,
@@ -1984,8 +1984,8 @@ class VibrationalFrequencies(MSection):
 
     value = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_frequencies"],
-        unit="1 / meter",
+        shape=['n_frequencies'],
+        unit='1 / meter',
         description="""
         Values of vibrational frequencies (m-1)
         """,
@@ -2009,7 +2009,7 @@ class RadiusOfGyrationValues(AtomicGroupValues):
     value = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="m",
+        unit='m',
         description="""
         Value of Rg.
         """,
@@ -2045,8 +2045,8 @@ class MagneticShielding(MSection):
 
     value = Quantity(
         type=np.float64,
-        shape=["n_atoms", 3, 3],
-        unit="dimensionless",
+        shape=['n_atoms', 3, 3],
+        unit='dimensionless',
         description="""
         Value of the magnetic shielding tensor per atom. The first index runs for all the
         atoms in the unit cell, while 3x3 refers to each axis direction. This quantity
@@ -2058,8 +2058,8 @@ class MagneticShielding(MSection):
 
     isotropic_value = Quantity(
         type=np.float64,
-        shape=["n_atoms"],
-        unit="dimensionless",
+        shape=['n_atoms'],
+        unit='dimensionless',
         description="""
         Value of the isotropic part of the magnetic shielding tensor per atom. The first
         index runs for all the atoms in the unit cell. This quantity relates with magnetic
@@ -2091,7 +2091,7 @@ class ElectricFieldGradient(MSection):
     m_def = Section(validate=False)
 
     contribution = Quantity(
-        type=MEnum("total", "local", "non_local"),
+        type=MEnum('total', 'local', 'non_local'),
         description="""
         Type of contribution to the electric field gradient (EFG). The total EFG is
         composed of `local` and `non_local` contributions.
@@ -2100,8 +2100,8 @@ class ElectricFieldGradient(MSection):
 
     value = Quantity(
         type=np.float64,
-        shape=["n_atoms", 3, 3],
-        unit="volt / meter ** 2",
+        shape=['n_atoms', 3, 3],
+        unit='volt / meter ** 2',
         description="""
         Value of the electric field gradient (EFG) for each `contribution` per unit area.
         The first index runs for all the atoms in the unit cell, while 3x3 refers to each
@@ -2111,7 +2111,7 @@ class ElectricFieldGradient(MSection):
 
     quadrupolar_coupling_constant = Quantity(
         type=np.float64,
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Quadrupolar coupling constant for each atom in the unit cell. It is computed from
         the eigenvalues of the EFG tensor as:
@@ -2124,7 +2124,7 @@ class ElectricFieldGradient(MSection):
 
     asymmetry_parameter = Quantity(
         type=np.float64,
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Asymmetry parameter for each atom in the unit cell. It is computed from the
         eigenvalues of the EFG tensor as:
@@ -2153,12 +2153,12 @@ class SpinSpinCoupling(MSection):
 
     contribution = Quantity(
         type=MEnum(
-            "total",
-            "direct_dipolar",
-            "fermi_contact",
-            "orbital_diamagnetic",
-            "orbital_paramagnetic",
-            "spin_dipolar",
+            'total',
+            'direct_dipolar',
+            'fermi_contact',
+            'orbital_diamagnetic',
+            'orbital_paramagnetic',
+            'spin_dipolar',
         ),
         description="""
         Type of contribution to the indirect spin-spin coupling. The total indirect spin-spin
@@ -2178,8 +2178,8 @@ class SpinSpinCoupling(MSection):
 
     value = Quantity(
         type=np.float64,
-        shape=["n_atoms", "n_atoms", 3, 3],
-        unit="joule",
+        shape=['n_atoms', 'n_atoms', 3, 3],
+        unit='joule',
         description="""
         Value of the indirect spin-spin couplings for each contribution. The first and second
         indices run for all the combinations of pairs of atoms in the unit cell, while
@@ -2189,8 +2189,8 @@ class SpinSpinCoupling(MSection):
 
     reduced_value = Quantity(
         type=np.float64,
-        shape=["n_atoms", "n_atoms", 3, 3],
-        unit="kelvin**2 / joule",
+        shape=['n_atoms', 'n_atoms', 3, 3],
+        unit='kelvin**2 / joule',
         description="""
         Reduced value of the indirect spin-spin couplings for each contribution. The first and second
         indices run for all the combinations of pairs of atoms in the unit cell, while
@@ -2214,7 +2214,7 @@ class MagneticSusceptibility(MSection):
     m_def = Section(validate=False)
 
     scale_dimension = Quantity(
-        type=MEnum("microscopic", "macroscopic"),
+        type=MEnum('microscopic', 'macroscopic'),
         description="""
         Identifier of the scale dimension of the magnetic susceptibility tensor.
         """,
@@ -2261,7 +2261,7 @@ class BaseCalculation(ArchiveSection):
     )
 
     starting_calculation_ref = Quantity(
-        type=Reference(SectionProxy("Calculation")),
+        type=Reference(SectionProxy('Calculation')),
         shape=[],
         description="""
         Links the current section calculation to the starting calculation.
@@ -2278,8 +2278,8 @@ class BaseCalculation(ArchiveSection):
     )
 
     calculations_ref = Quantity(
-        type=Reference(SectionProxy("Calculation")),
-        shape=["n_references"],
+        type=Reference(SectionProxy('Calculation')),
+        shape=['n_references'],
         description="""
         Links the current section calculation to other section calculations. Such a link
         is necessary for example if the referenced calculation is a self-consistent
@@ -2291,7 +2291,7 @@ class BaseCalculation(ArchiveSection):
 
     calculations_path = Quantity(
         type=str,
-        shape=["n_references"],
+        shape=['n_references'],
         description="""
         Links the current section calculation to other section calculations. Such a link
         is necessary for example if the referenced calculation is a self-consistent
@@ -2310,7 +2310,7 @@ class BaseCalculation(ArchiveSection):
 
     hessian_matrix = Quantity(
         type=np.dtype(np.float64),
-        shape=["number_of_atoms", "number_of_atoms", 3, 3],
+        shape=['number_of_atoms', 'number_of_atoms', 3, 3],
         description="""
         The matrix with the second derivative of the energy with respect to atom
         displacements.
@@ -2330,7 +2330,7 @@ class BaseCalculation(ArchiveSection):
     time_calculation = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the wall-clock time needed to complete the calculation i.e. the real time
         that has elapsed from start to end of calculation.
@@ -2341,7 +2341,7 @@ class BaseCalculation(ArchiveSection):
     time_physical = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         The elapsed real time at the end of the calculation with respect to the start of
         the simulation.
@@ -2405,7 +2405,7 @@ class BaseCalculation(ArchiveSection):
     volume = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="m ** 3",
+        unit='m ** 3',
         description="""
         Value of the volume of the system.
         """,
@@ -2414,7 +2414,7 @@ class BaseCalculation(ArchiveSection):
     density = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="kg / m ** 3",
+        unit='kg / m ** 3',
         description="""
         Value of the density of the system.
         """,
@@ -2423,7 +2423,7 @@ class BaseCalculation(ArchiveSection):
     pressure = Quantity(
         type=np.float64,
         shape=[],
-        unit="pascal",
+        unit='pascal',
         description="""
         Value of the pressure of the system.
         """,
@@ -2432,7 +2432,7 @@ class BaseCalculation(ArchiveSection):
     pressure_tensor = Quantity(
         type=np.float64,
         shape=[3, 3],
-        unit="pascal",
+        unit='pascal',
         description="""
         Value of the pressure in terms of the x, y, z components of the simulation cell.
         Typically calculated as the difference between the kinetic energy and the virial.
@@ -2442,7 +2442,7 @@ class BaseCalculation(ArchiveSection):
     virial_tensor = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the virial in terms of the x, y, z components of the simulation cell.
         Typically calculated as the cross product between positions and forces.
@@ -2452,7 +2452,7 @@ class BaseCalculation(ArchiveSection):
     enthalpy = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="joule",
+        unit='joule',
         description="""
         Value of the calculated enthalpy per cell i.e. energy_total + pressure * volume.
         """,
@@ -2461,7 +2461,7 @@ class BaseCalculation(ArchiveSection):
     temperature = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="kelvin",
+        unit='kelvin',
         description="""
         Value of the temperature of the system.
         """,
@@ -2478,7 +2478,7 @@ class BaseCalculation(ArchiveSection):
     time = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         The elapsed simulated physical time since the start of the simulation.
         """,

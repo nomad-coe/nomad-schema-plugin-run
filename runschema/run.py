@@ -17,24 +17,23 @@
 #
 
 import numpy as np
-
+from nomad.datamodel.data import ArchiveSection
+from nomad.datamodel.metainfo.common import FastAccess
 from nomad.metainfo import (
-    MSection,
-    MCategory,
     Category,
+    MCategory,
+    MSection,
     Package,
     Quantity,
-    Section,
-    SubSection,
-    SectionProxy,
     Reference,
+    Section,
+    SectionProxy,
+    SubSection,
 )
+
+from .calculation import Calculation
 from .method import Method
 from .system import System
-from .calculation import Calculation
-from nomad.datamodel.metainfo.common import FastAccess
-from nomad.datamodel.data import ArchiveSection
-
 
 m_package = Package()
 
@@ -95,7 +94,7 @@ class Program(MSection):
     compilation_datetime = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Contains the program compilation date and time from *Unix epoch* (00:00:00 UTC on
         1 January 1970) in seconds. For date and times without a timezone, the default
@@ -124,7 +123,7 @@ class TimeRun(MSection):
     date_end = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the end date of the run as time since the *Unix epoch* (00:00:00 UTC on 1
         January 1970) in seconds. For date and times without a timezone, the default
@@ -135,7 +134,7 @@ class TimeRun(MSection):
     date_start = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the start date of the run as time since the *Unix epoch* (00:00:00 UTC on 1
         January 1970) in seconds. For date and times without a timezone, the default
@@ -146,7 +145,7 @@ class TimeRun(MSection):
     cpu1_end = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the end time of the run on CPU 1.
         """,
@@ -155,7 +154,7 @@ class TimeRun(MSection):
     cpu1_start = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the start time of the run on CPU 1.
         """,
@@ -164,7 +163,7 @@ class TimeRun(MSection):
     wall_end = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the internal wall-clock time at the end of the run.
         """,
@@ -173,7 +172,7 @@ class TimeRun(MSection):
     wall_start = Quantity(
         type=np.dtype(np.float64),
         shape=[],
-        unit="second",
+        unit='second',
         description="""
         Stores the internal wall-clock time from the start of the run.
         """,
@@ -238,7 +237,7 @@ class Run(ArchiveSection):
     )
 
     starting_run_ref = Quantity(
-        type=Reference(SectionProxy("Run")),
+        type=Reference(SectionProxy('Run')),
         shape=[],
         description="""
         Links the current section run to a section run containing the calculations from
@@ -256,8 +255,8 @@ class Run(ArchiveSection):
     )
 
     runs_ref = Quantity(
-        type=Reference(SectionProxy("Run")),
-        shape=["n_references"],
+        type=Reference(SectionProxy('Run')),
+        shape=['n_references'],
         description="""
         Links the the current section to other run sections. Such a link is necessary for
         example for workflows that may contain a series of runs.
