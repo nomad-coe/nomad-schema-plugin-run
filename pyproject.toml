@@ -3,14 +3,14 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = 'nomad-schema-plugin-run'
-version = '1.0'
-description = 'Run schema plugin for NOMAD.'
+name = "runschema"
+version = "1.0"
+description = "Run schema plugin for NOMAD."
 readme = "README.md"
 authors = [{ name = "The NOMAD Authors" }]
 license = { text = "Apache-2.0" }
 dependencies = [
-    "nomad-lab[infrastructure]@git+https://github.com/nomad-coe/nomad.git@develop"
+    "nomad-lab>=1.2.0"
 ]
 
 [project.urls]
@@ -18,18 +18,15 @@ homepage = "https://github.com/nomad-coe/nomad-schema-plugin-run.git"
 
 [project.optional-dependencies]
 dev = [
-    'mypy==1.0.1',
-    'pytest==3.10.0',
-    'pytest-timeout==1.4.2',
-    'pytest-cov==2.7.1',
-    'ruff==0.1.4'
+    "mypy==1.0.1",
+    "pytest==3.10.0",
+    "pytest-timeout==1.4.2",
+    "pytest-cov==2.7.1",
+    "ruff==0.1.4"
 ]
-
-tests = [
-]
-
 [tool.ruff]
 include = ["runschema/*.py", "tests/*.py"]
+
 select = [
     "E", # pycodestyle
     "W", # pycodestyle
@@ -52,8 +49,25 @@ ignore = [
 ]
 fixable = ["ALL"]
 
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+[tool.ruff.format]
+# use single quotes for strings.
+quote-style = "single"
+
+# indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
 [tool.setuptools.packages.find]
 include = ["runschema*"]
 
 [tool.setuptools.package-data]
-runschema = ['*/nomad_plugin.yaml']
+runschema = ["*/nomad_plugin.yaml"]

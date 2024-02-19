@@ -16,7 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import runschema
 
 
 def test_schema():
-    pass
+    run = runschema.run.Run()
+    assert run.m_def.definition_id == 'fc17fdfdcba5aef2c02835a81ed65f95f314b687'
+    run.calculation.append(runschema.calculation.Calculation())
+    run.method.append(runschema.method.Method())
+    run.system.append(runschema.system.System())

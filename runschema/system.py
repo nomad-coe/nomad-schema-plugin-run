@@ -16,21 +16,21 @@
 # limitations under the License.
 #
 
-import numpy as np
 import typing
+
+import numpy as np
+from nomad.datamodel.data import ArchiveSection
+from nomad.datamodel.metainfo.common import FastAccess
 from nomad.metainfo import (
     MSection,
     Package,
     Quantity,
-    Section,
-    SubSection,
-    SectionProxy,
     Reference,
+    Section,
+    SectionProxy,
+    SubSection,
 )
-from nomad.datamodel.data import ArchiveSection
-from nomad.datamodel.metainfo.common import FastAccess
 from nomad.units import ureg
-
 
 m_package = Package()
 
@@ -87,7 +87,7 @@ class AtomsGroup(MSection):
 
     atom_indices = Quantity(
         type=np.dtype(np.int32),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Indices of the atoms in the group with respect to the system.
         """,
@@ -111,7 +111,7 @@ class AtomsGroup(MSection):
         """,
     )
 
-    atoms_group = SubSection(sub_section=SectionProxy("AtomsGroup"), repeats=True)
+    atoms_group = SubSection(sub_section=SectionProxy('AtomsGroup'), repeats=True)
 
 
 class Atoms(MSection):
@@ -132,7 +132,7 @@ class Atoms(MSection):
 
     atomic_numbers = Quantity(
         type=np.dtype(np.int32),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         List of atomic numbers Z of the atoms identified in labels. If a species cannot
         be assigned Z, a negative value can also be used to distinguish it.
@@ -141,7 +141,7 @@ class Atoms(MSection):
 
     equivalent_atoms = Quantity(
         type=np.dtype(np.int32),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Gives a mapping table of atoms to symmetrically independent atoms in the
         standardized cell. This is used to find symmetrically equivalent atoms.
@@ -150,7 +150,7 @@ class Atoms(MSection):
 
     wyckoff_letters = Quantity(
         type=str,
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Wyckoff letters corresponding to each atom.
         """,
@@ -158,7 +158,7 @@ class Atoms(MSection):
 
     concentrations = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Concentrations of the species defined by labels which can be assigned for systems
         with variable compositions.
@@ -167,7 +167,7 @@ class Atoms(MSection):
 
     species = Quantity(
         type=np.dtype(np.int32),
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         Species of the atom (normally the atomic number Z, 0 or negative for unidentifed
         species or particles that are not atoms.
@@ -176,7 +176,7 @@ class Atoms(MSection):
 
     labels = Quantity(
         type=str,
-        shape=["n_atoms"],
+        shape=['n_atoms'],
         description="""
         List containing the labels of the atoms. In the usual case, these correspond to
         the chemical symbols of the atoms. One can also append an index if there is a
@@ -191,8 +191,8 @@ class Atoms(MSection):
 
     positions = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", 3],
-        unit="meter",
+        shape=['n_atoms', 3],
+        unit='meter',
         description="""
         Positions of all the species, in cartesian coordinates. This metadata defines a
         configuration and is therefore required. For alloys where concentrations of
@@ -203,8 +203,8 @@ class Atoms(MSection):
 
     velocities = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", 3],
-        unit="meter / second",
+        shape=['n_atoms', 3],
+        unit='meter / second',
         description="""
         Velocities of the nuclei, defined as the change in cartesian coordinates of the
         nuclei with respect to time.
@@ -214,7 +214,7 @@ class Atoms(MSection):
     lattice_vectors = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="meter",
+        unit='meter',
         description="""
         Lattice vectors of the simulation cell in cartesian coordinates. The
         last (fastest) index runs over the $x,y,z$ Cartesian coordinates, and the first
@@ -225,7 +225,7 @@ class Atoms(MSection):
     lattice_vectors_reciprocal = Quantity(
         type=np.dtype(np.float64),
         shape=[3, 3],
-        unit="1/meter",
+        unit='1/meter',
         description="""
         Reciprocal lattice vectors of the simulation cell, in cartesian coordinates and with the 2 $pi$ pre-factor.
         The first index runs over the $x,y,z$ Cartesian coordinates, and the second index runs
@@ -235,7 +235,7 @@ class Atoms(MSection):
 
     local_rotations = Quantity(
         type=np.dtype(np.float64),
-        shape=["n_atoms", 3, 3],
+        shape=['n_atoms', 3, 3],
         description="""
         A rotation matrix defining the orientation of each atom. If the rotation matrix
         cannot be specified for an atom, the remaining atoms should set it to
@@ -510,7 +510,7 @@ class SpringerMaterial(MSection):
 
     compound_class = Quantity(
         type=str,
-        shape=["N"],
+        shape=['N'],
         description="""
         Name of a class of the current compound, as defined in by Springer Materials. This
         is a property of the chemical formula of the compound
@@ -519,7 +519,7 @@ class SpringerMaterial(MSection):
 
     classification = Quantity(
         type=str,
-        shape=["N"],
+        shape=['N'],
         description="""
         Contains the classification name of the current material according to Springer
         Materials
@@ -564,7 +564,7 @@ class Constraint(MSection):
 
     atom_indices = Quantity(
         type=np.dtype(np.int32),
-        shape=["n_constraints", "n_atoms"],
+        shape=['n_constraints', 'n_atoms'],
         description="""
         List of the indexes involved in this constraint.
         """,
@@ -588,8 +588,8 @@ class MACE(MSection):
     )
 
     system_descriptor = Quantity(
-        type=np.dtype("float64"),
-        shape=["*"],
+        type=np.dtype('float64'),
+        shape=['*'],
         description="""
         MACE descriptors computed using the MACE-MP-0 foundation model and averaged across all atoms in the system.
         """,
@@ -615,13 +615,13 @@ class SOAP(MSection):
         """,
     )
     r_cut = Quantity(
-        type=np.dtype("float64"),
+        type=np.dtype('float64'),
         description="""
         Cutoff distance defining each local environment.
         """,
     )
     atom_sigma = Quantity(
-        type=np.dtype("float64"),
+        type=np.dtype('float64'),
         description="""
         Width of Gaussians used in density expansion
         """,
@@ -670,8 +670,8 @@ class SOAP(MSection):
     )
 
     structural_soap = Quantity(
-        type=np.dtype("float64"),
-        shape=["*"],
+        type=np.dtype('float64'),
+        shape=['*'],
         description="""
         1. Structure scaled so that the average nearest neighbour distance is 1.54 AA.
         Atoms in the initial structure without a neighbour within 10 AA do not count towards the scaling factor and structures with no neighbours within 10 AA are not scaled at all.
@@ -749,7 +749,7 @@ class System(ArchiveSection):
     )
 
     sub_system_ref = Quantity(
-        type=Reference(SectionProxy("System")),
+        type=Reference(SectionProxy('System')),
         shape=[],
         description="""
         Links the current section system to a sub system.
@@ -758,8 +758,8 @@ class System(ArchiveSection):
     )
 
     systems_ref = Quantity(
-        type=Reference(SectionProxy("System")),
-        shape=["n_references"],
+        type=Reference(SectionProxy('System')),
+        shape=['n_references'],
         description="""
         Links the current section system to other section systems. Such a link is
         necessary for example between the supercell and the reference unit cell in a phonon
