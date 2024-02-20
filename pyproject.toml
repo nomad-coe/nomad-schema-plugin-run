@@ -24,6 +24,10 @@ dev = [
     "pytest-cov==2.7.1",
     "ruff==0.1.4"
 ]
+tests = [
+    # we need the latest nomad version for testing
+    "nomad-lab[infrastructure]@git+https://github.com/nomad-coe/nomad.git@develop"
+]
 [tool.ruff]
 include = ["runschema/*.py", "tests/*.py"]
 

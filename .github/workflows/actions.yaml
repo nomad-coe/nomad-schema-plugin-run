@@ -13,14 +13,12 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install '.[dev]' --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
-        : # we need the latest nomad version for testing
-        pip install --ignore-installed nomad-lab[infrastructure]@git+https://github.com/nomad-coe/nomad.git@develop
+        pip install --ignore-installed '.[tests]'
         pip install coverage coveralls
     - name: mypy
       run: |
         python -m mypy --ignore-missing-imports --follow-imports=silent --no-strict-optional runschema tests
     - name: Test with pytest
-      continue-on-error: true
       run: |
         python -m coverage run -m pytest -sv tests
     - name: Submit to coveralls

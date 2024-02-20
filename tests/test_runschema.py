@@ -16,10 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ..runschema.run import Run
-from ..runschema.calculation import Calculation
-from ..runschema.method import Method
-from ..runschema.system import System
+from runschema.run import Run
+from runschema.calculation import Calculation
+from runschema.method import Method
+from runschema.system import System
 
 
 def test_schema():
