@@ -13,7 +13,7 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install '.[dev]' --index-url https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple
-        pip install --ignore-installed '.[tests]'
+        pip install --force-reinstall '.[tests]'
         pip install coverage coveralls
     - name: mypy
       run: |
