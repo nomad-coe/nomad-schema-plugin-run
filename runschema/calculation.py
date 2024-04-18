@@ -25,7 +25,6 @@ from nomad.datamodel.metainfo.common import (
 )
 from nomad.metainfo import (
     Category,
-    HDF5Reference,
     MCategory,
     MEnum,
     MSection,
@@ -36,6 +35,7 @@ from nomad.metainfo import (
     SectionProxy,
     SubSection,
 )
+from nomad.datamodel.hdf5 import HDF5Dataset
 
 from .method import HoppingMatrix, Method
 from .system import AtomsGroup, System
@@ -1707,10 +1707,10 @@ class Density(Volumetric):
     # TODO rename this to value or restructure metainfo def for densities and perhaps
     # rename density_charge to charge_density if no other densities are to be added.
     value_hdf5 = Quantity(
-        type=HDF5Reference,
+        type=HDF5Dataset,
         shape=[],
         description="""
-        Specifies the HDF5 file and the path to the value in the file .
+        Value of the charge density written on HDF5.
         """,
     )
 
