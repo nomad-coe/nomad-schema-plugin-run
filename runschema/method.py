@@ -1456,7 +1456,7 @@ class Interaction(MSection):
     )
 
     n_interactions = Quantity(
-        type=np.dtype(np.int32),
+        type=np.int32,
         shape=[],
         description="""
         Total number of interactions of this type for interaction groupings.
@@ -1472,7 +1472,7 @@ class Interaction(MSection):
     )
 
     atom_labels = Quantity(
-        type=np.dtype(str),
+        type=str,
         shape=['n_interactions', 'n_atoms'],
         description="""
         Labels of the atoms described by the interaction. Can be a list of lists for interaction groupings.
