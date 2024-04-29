@@ -21,7 +21,7 @@ from nomad.datamodel.metainfo import runschema
 
 def test_schema():
     run = runschema.run.Run()
-    assert run.m_def.definition_id == '3ae043b867efa8f580a5f992213c19e06f20a4e4'
+    assert run.m_def.definition_id == '1ca712ab73cafa0e5edb0de6176fd2c879d81ea1'
     run.calculation.append(runschema.calculation.Calculation())
     run.method.append(runschema.method.Method())
     run.system.append(runschema.system.System())
