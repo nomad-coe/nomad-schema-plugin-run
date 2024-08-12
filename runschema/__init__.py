@@ -16,4 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from . import calculation, method, run, system
+from nomad.config.models.plugins import SchemaPackageEntryPoint
+
+
+class RunSchemaEntryPoint(SchemaPackageEntryPoint):
+    def load(self):
+        from .run import m_package
+
+        return m_package
+
+
+run = RunSchemaEntryPoint(
+    name='RunSchema', description='Schema definitions for the nomad run section.'
+)
