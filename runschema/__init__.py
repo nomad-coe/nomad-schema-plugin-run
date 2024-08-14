@@ -22,10 +22,9 @@ from nomad.config.models.plugins import SchemaPackageEntryPoint
 class RunSchemaEntryPoint(SchemaPackageEntryPoint):
     def load(self):
         from .run import m_package
-
         return m_package
 
 
-run = RunSchemaEntryPoint(
-    name='RunSchema', description='Schema definitions for the nomad run section.'
+run_schema_entry_point = RunSchemaEntryPoint(
+    name="RunSchema", description="Schema for the nomad run section."
 )

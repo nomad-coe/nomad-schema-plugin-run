@@ -71,4 +71,4 @@ line-ending = "auto"
 include = ["runschema*"]
 
 [project.entry-points.'nomad.plugin']
-runschema = "runschema:run"
+runschema = "runschema:run_schema_entry_point"
