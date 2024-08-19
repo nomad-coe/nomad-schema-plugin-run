@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [{ name = "The NOMAD Authors" }]
 license = { text = "Apache-2.0" }
 dependencies = [
-    "nomad-lab>=1.2.0"
+    "nomad-lab>=1.2.2dev578"
 ]
 
 [project.urls]
@@ -70,5 +70,5 @@ line-ending = "auto"
 [tool.setuptools.packages.find]
 include = ["runschema*"]
 
-[tool.setuptools.package-data]
-runschema = ["*/nomad_plugin.yaml"]
+[project.entry-points.'nomad.plugin']
+runschema = "runschema:run_schema_entry_point"
