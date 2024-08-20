@@ -19,6 +19,9 @@
 from nomad.config.models.plugins import SchemaPackageEntryPoint
 
 
+def load_module():
+    from . import calculation, system, method, run  # noqa
+
 class RunSchemaEntryPoint(SchemaPackageEntryPoint):
     def load(self):
         from .run import m_package
