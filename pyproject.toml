@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0.0", "setuptools-scm>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "nomad-schema-plugin-run"
-version = "1.0.1"
+dynamic = ["version"]
 description = "Run schema plugin for NOMAD."
 readme = "README.md"
 authors = [{ name = "The NOMAD Authors" }]
@@ -69,6 +69,8 @@ line-ending = "auto"
 
 [tool.setuptools.packages.find]
 include = ["runschema*"]
+
+[tool.setuptools_scm]
 
 [project.entry-points.'nomad.plugin']
 runschema = "runschema:run_schema_entry_point"
