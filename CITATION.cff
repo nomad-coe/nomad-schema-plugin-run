@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: NOMAD Schmea Plugin Run
+title: NOMAD Schema Plugin Run
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -11,6 +11,9 @@ authors:
   - given-names: Nathan
     family-names: Daelman
     orcid: 'https://orcid.org/0000-0002-7647-1816'
+  - given-names: Luca M.
+    family-names: Ghiringhelli
+    orcid: 'https://orcid.org/0000-0001-5099-3029'
   - given-names: José M.
     family-names: Pizarro
     orcid: 'https://orcid.org/0000-0002-6751-8192'
