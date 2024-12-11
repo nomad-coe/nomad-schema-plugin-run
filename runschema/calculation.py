@@ -36,6 +36,7 @@ from nomad.metainfo import (
     SubSection,
 )
 from nomad.datamodel.hdf5 import HDF5Dataset
+from nomad.datamodel.metainfo.annotations import H5WebAnnotation
 
 from .method import HoppingMatrix, Method
 from .system import AtomsGroup, System
@@ -1693,7 +1694,10 @@ class Density(Volumetric):
     Section containing the values of the density evaluated on a uniform real-space grid.
     """
 
-    m_def = Section(validate=False)
+    m_def = Section(
+        validate=False,
+        a_h5web=H5WebAnnotation(signal='value_hdf5', title='Charge density'),
+    )
 
     value = Quantity(
         type=np.dtype(np.float64),
