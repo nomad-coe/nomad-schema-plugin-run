@@ -18,7 +18,7 @@ homepage = "https://github.com/nomad-coe/nomad-schema-plugin-run.git"
 
 [project.optional-dependencies]
 dev = [
-    'mypy==1.0.1',
+    'mypy>=1.15',
     'pytest>= 5.3.0, <8',
     'pytest-timeout>=1.4.2',
     'pytest-cov>=2.7.1',
@@ -29,12 +29,12 @@ dev = [
 [tool.ruff]
 include = ["runschema/*.py", "tests/*.py"]
 
-select = [
+lint.select = [
     "E", # pycodestyle
     "W", # pycodestyle
     "PL", # pylint
 ]
-ignore = [
+lint.ignore = [
     "E501", # Line too long ({width} > {limit} characters)
     "E701", # Multiple statements on one line (colon)
     "E731", # Do not assign a lambda expression, use a def
@@ -49,7 +49,7 @@ ignore = [
     "PLR1714", # consider-using-in
     "PLR5501", # else-if-used
 ]
-fixable = ["ALL"]
+lint.fixable = ["ALL"]
 
 # Same as Black.
 line-length = 88
