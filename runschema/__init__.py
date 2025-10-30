@@ -25,7 +25,7 @@ def load_module():
 
 class RunSchemaEntryPoint(SchemaPackageEntryPoint):
     def load(self):
-        from .run import m_package
+        from .run import m_package  # noqa
 
         return m_package
 
