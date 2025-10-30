@@ -290,7 +290,7 @@ class Atoms(MSection):
             to missing data).
         """
         try:
-            from ase import Atoms
+            from ase import Atoms  # noqa
 
             return Atoms(
                 symbols=self.labels,
