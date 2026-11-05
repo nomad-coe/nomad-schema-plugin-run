@@ -189,6 +189,16 @@ class Atoms(MSection):
         """,
     )
 
+    masses = Quantity(
+        type=np.dtype(np.float64),
+        shape=['n_atoms'],
+        unit='kg',
+        description="""
+        Per-particle masses. A value of zero denotes an unavailable mass for
+        that particle.
+        """,
+    )
+
     positions = Quantity(
         type=np.dtype(np.float64),
         shape=['n_atoms', 3],

@@ -16,7 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import numpy as np
+
 from nomad.datamodel.metainfo import runschema
+from nomad.units import ureg
 
 
 def test_schema():
@@ -24,3 +27,16 @@ def test_schema():
     run.calculation.append(runschema.calculation.Calculation())
     run.method.append(runschema.method.Method())
     run.system.append(runschema.system.System())
+
+
+def test_atoms_support_per_particle_masses():
+    atoms = runschema.system.Atoms(
+        n_atoms=2,
+        labels=['WN1', 'WP1'],
+        masses=np.array([72.0, 36.0]) * ureg.amu,
+    )
+
+    np.testing.assert_allclose(
+        atoms.masses.to(ureg.amu).magnitude,
+        [72.0, 36.0],
+    )
